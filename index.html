@@ -3,147 +3,226 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>POCUS Cardiac Escape Room</title>
+<title>POCUS Escape Room</title>
 <style>
     body {
-        font-family: Arial, sans-serif;
+        font-family: system-ui, -apple-system, Arial;
         margin: 0;
-        padding: 0;
-        background: #0f172a;
-        color: #e2e8f0;
+        background: #0b1220;
+        color: #e5e7eb;
     }
     header {
-        padding: 16px;
+        padding: 14px;
         text-align: center;
-        background: #1e293b;
-        font-size: 18px;
-        font-weight: bold;
+        background: #111827;
+        font-weight: 700;
+        font-size: 16px;
     }
     .container {
-        padding: 16px;
-        max-width: 600px;
+        max-width: 720px;
         margin: auto;
+        padding: 14px;
     }
     .card {
-        background: #1e293b;
-        padding: 16px;
-        margin-bottom: 16px;
-        border-radius: 12px;
+        background: #111827;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 14px;
     }
-    input {
+    h2 { margin-top: 0; font-size: 18px; }
+
+    video {
         width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        margin-top: 8px;
-        border-radius: 8px;
-        border: none;
-    }
-    button {
-        width: 100%;
-        padding: 12px;
-        margin-top: 8px;
-        background: #38bdf8;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-    button:hover {
-        background: #0ea5e9;
-    }
-    .hidden {
-        display: none;
-    }
-    .success {
-        color: #22c55e;
+        border-radius: 10px;
         margin-top: 8px;
     }
-    .hint {
+
+    .upload {
+        margin-top: 8px;
         font-size: 13px;
         opacity: 0.8;
-        margin-top: 6px;
     }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    label {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 12px;
+        background: #0f172a;
+        border-radius: 10px;
+        font-size: 15px;
+    }
+
+    input[type="checkbox"] {
+        transform: scale(1.3);
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        margin-top: 10px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 700;
+        font-size: 16px;
+        background: #38bdf8;
+    }
+
+    button:active {
+        transform: scale(0.98);
+    }
+
+    .msg {
+        margin-top: 10px;
+        font-size: 14px;
+        line-height: 1.3;
+    }
+
+    .success { color: #22c55e; }
+    .error { color: #ef4444; }
+
+    .hidden { display: none; }
 </style>
 </head>
 <body>
 
 <header>
-POCUS Escape Room: Cardiac Shock Challenge
+POCUS Escape Room
 </header>
 
 <div class="container">
 
 <!-- CASE 1 -->
-<div class="card">
-<h2>Case 1: Tamponade</h2>
-<p>Enter the 3-digit code from your interpretation station.</p>
-<input id="code1" placeholder="Enter code" />
-<button onclick="checkCode1()">Unlock</button>
-<div id="msg1" class="success hidden"></div>
-<p class="hint">Hint: Obstructive shock physiology</p>
+<div class="card" id="case1">
+<h2>Case 1</h2>
+
+<video controls id="video1">
+    <source src="tamponade.mp4" type="video/mp4">
+</video>
+
+<div class="upload">
+Optional: Load local clip
+<input type="file" accept="video/*" onchange="loadVideo(event,'video1')">
+</div>
+
+<div class="grid">
+<label><input type="checkbox" value="2"> Pericardial effusion</label>
+<label><input type="checkbox" value="7"> RV diastolic collapse</label>
+<label><input type="checkbox" value="4"> RV dilation</label>
+<label><input type="checkbox" value="8"> Septal flattening</label>
+<label><input type="checkbox" value="1"> Hyperdynamic LV</label>
+<label><input type="checkbox" value="6"> Reduced LV function</label>
+<label><input type="checkbox" value="3"> Diffuse B-lines</label>
+<label><input type="checkbox" value="9"> Plethoric IVC</label>
+</div>
+
+<button onclick="checkCase('case1','729', ['7','2','9'])">Submit</button>
+<div class="msg" id="msg1"></div>
 </div>
 
 <!-- CASE 2 -->
-<div id="case2" class="card hidden">
-<h2>Case 2: CHF Exacerbation</h2>
-<p>Enter the 3-digit code from your interpretation station.</p>
-<input id="code2" placeholder="Enter code" />
-<button onclick="checkCode2()">Unlock</button>
-<div id="msg2" class="success hidden"></div>
-<p class="hint">Hint: Pump failure + pulmonary congestion</p>
+<div class="card hidden" id="case2">
+<h2>Case 2</h2>
+
+<video controls id="video2">
+    <source src="chf.mp4" type="video/mp4">
+</video>
+
+<div class="upload">
+Optional: Load local clip
+<input type="file" accept="video/*" onchange="loadVideo(event,'video2')">
+</div>
+
+<div class="grid">
+<label><input type="checkbox" value="6"> Reduced LV function</label>
+<label><input type="checkbox" value="3"> Diffuse B-lines</label>
+<label><input type="checkbox" value="9"> Plethoric IVC</label>
+<label><input type="checkbox" value="2"> Pericardial effusion</label>
+<label><input type="checkbox" value="7"> RV collapse</label>
+</div>
+
+<button onclick="checkCase('case2','639', ['6','3','9'])">Submit</button>
+<div class="msg" id="msg2"></div>
 </div>
 
 <!-- CASE 3 -->
-<div id="case3" class="card hidden">
-<h2>Case 3: Pulmonary Hypertensive Crisis</h2>
-<p>Enter the 3-digit code from your interpretation station.</p>
-<input id="code3" placeholder="Enter code" />
-<button onclick="checkCode3()">Unlock</button>
-<div id="msg3" class="success hidden"></div>
-<p class="hint">Hint: RV failure physiology</p>
+<div class="card hidden" id="case3">
+<h2>Case 3</h2>
+
+<video controls id="video3">
+    <source src="ph.mp4" type="video/mp4">
+</video>
+
+<div class="upload">
+Optional: Load local clip
+<input type="file" accept="video/*" onchange="loadVideo(event,'video3')">
+</div>
+
+<div class="grid">
+<label><input type="checkbox" value="4"> RV dilation</label>
+<label><input type="checkbox" value="8"> Septal flattening</label>
+<label><input type="checkbox" value="9"> Plethoric IVC</label>
+<label><input type="checkbox" value="3"> B-lines</label>
+</div>
+
+<button onclick="checkCase('case3','489', ['4','8','9'])">Submit</button>
+<div class="msg" id="msg3"></div>
 </div>
 
 <!-- FINAL -->
-<div id="final" class="card hidden">
-<h2>🎉 Final Challenge Complete</h2>
-<p>You have stabilized all patients.</p>
-<p><b>Debrief:</b> Compare how POCUS findings drove your diagnosis and management decisions.</p>
+<div class="card hidden" id="final">
+<h2>Complete</h2>
+<p>All cases solved.</p>
 </div>
 
 </div>
 
 <script>
-function checkCode1() {
-    const val = document.getElementById('code1').value.trim();
-    if (val === "729") {
-        document.getElementById('msg1').innerText = "Correct. Tamponade physiology confirmed.";
-        document.getElementById('msg1').classList.remove('hidden');
-        document.getElementById('case2').classList.remove('hidden');
-    } else {
-        alert("Incorrect code. Reassess findings.");
-    }
+function loadVideo(event, id) {
+    const file = event.target.files[0];
+    const video = document.getElementById(id);
+    video.src = URL.createObjectURL(file);
+    video.load();
 }
 
-function checkCode2() {
-    const val = document.getElementById('code2').value.trim();
-    if (val === "639") {
-        document.getElementById('msg2').innerText = "Correct. Cardiogenic shock confirmed.";
-        document.getElementById('msg2').classList.remove('hidden');
-        document.getElementById('case3').classList.remove('hidden');
-    } else {
-        alert("Incorrect code. Reassess findings.");
-    }
+function getSelected(containerId) {
+    const boxes = document.querySelectorAll(`#${containerId} input[type=checkbox]:checked`);
+    return Array.from(boxes).map(b => b.value);
 }
 
-function checkCode3() {
-    const val = document.getElementById('code3').value.trim();
-    if (val === "489") {
-        document.getElementById('msg3').innerText = "Correct. Pulmonary hypertensive crisis confirmed.";
-        document.getElementById('msg3').classList.remove('hidden');
-        document.getElementById('final').classList.remove('hidden');
+function compareSets(selected, required) {
+    const sel = [...selected].sort();
+    const req = [...required].sort();
+
+    const missing = req.filter(x => !sel.includes(x));
+    const extra = sel.filter(x => !req.includes(x));
+
+    return { ok: missing.length === 0 && extra.length === 0, missing, extra };
+}
+
+function checkCase(id, code, required) {
+    const selected = getSelected(id);
+    const result = compareSets(selected, required);
+    const msg = document.getElementById('msg' + id.slice(-1));
+
+    if (result.ok) {
+        msg.innerHTML = `<span class='success'>Correct code unlocked.</span>`;
+
+        if (id === 'case1') document.getElementById('case2').classList.remove('hidden');
+        if (id === 'case2') document.getElementById('case3').classList.remove('hidden');
+        if (id === 'case3') document.getElementById('final').classList.remove('hidden');
+
     } else {
-        alert("Incorrect code. Reassess findings.");
+        msg.innerHTML = `<span class='error'>Reassess findings.<br>
+        Missing: ${result.missing.join(', ') || 'none'}<br>
+        Extra: ${result.extra.join(', ') || 'none'}</span>`;
     }
 }
 </script>

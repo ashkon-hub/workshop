@@ -19,7 +19,7 @@
         font-size: 16px;
     }
     .container {
-        max-width: 720px;
+        max-width: 760px;
         margin: auto;
         padding: 14px;
     }
@@ -31,16 +31,32 @@
     }
     h2 { margin-top: 0; font-size: 18px; }
 
-    video {
+    input {
         width: 100%;
+        padding: 12px;
         border-radius: 10px;
+        border: none;
+        font-size: 16px;
         margin-top: 8px;
     }
 
-    .upload {
-        margin-top: 8px;
-        font-size: 13px;
-        opacity: 0.8;
+    button {
+        width: 100%;
+        padding: 14px;
+        margin-top: 10px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 700;
+        font-size: 16px;
+        background: #38bdf8;
+    }
+
+    button:active { transform: scale(0.98); }
+
+    video {
+        width: 100%;
+        border-radius: 10px;
+        margin-top: 10px;
     }
 
     .grid {
@@ -57,59 +73,59 @@
         padding: 12px;
         background: #0f172a;
         border-radius: 10px;
-        font-size: 15px;
-    }
-
-    input[type="checkbox"] {
-        transform: scale(1.3);
-    }
-
-    button {
-        width: 100%;
-        padding: 14px;
-        margin-top: 10px;
-        border-radius: 10px;
-        border: none;
-        font-weight: 700;
-        font-size: 16px;
-        background: #38bdf8;
-    }
-
-    button:active {
-        transform: scale(0.98);
     }
 
     .msg {
         margin-top: 10px;
         font-size: 14px;
-        line-height: 1.3;
     }
 
     .success { color: #22c55e; }
     .error { color: #ef4444; }
 
     .hidden { display: none; }
+
+    .small {
+        font-size: 12px;
+        opacity: 0.8;
+        margin-top: 6px;
+        line-height: 1.3;
+    }
 </style>
 </head>
 <body>
 
-<header>
-POCUS Escape Room
-</header>
+<header>POCUS Escape Room</header>
 
 <div class="container">
 
+<!-- ENTRY GATE CASE 1 -->
+<div class="card" id="gate1">
+<h2>Case Access</h2>
+<input id="entry1" placeholder="Enter access code" />
+<button onclick="unlock('entry1','KQTR','case1','msgGate1')">Unlock Case</button>
+<div class="msg" id="msgGate1"></div>
+</div>
+
 <!-- CASE 1 -->
-<div class="card" id="case1">
+<div class="card hidden" id="case1">
 <h2>Case 1</h2>
 
-<video controls id="video1">
-    <source src="tamponade.mp4" type="video/mp4">
+<video controls>
+    <source src="tamponade_cardiac.mp4" type="video/mp4">
+</video>
+<video controls>
+    <source src="tamponade_lung.mp4" type="video/mp4">
+</video>
+<video controls>
+    <source src="tamponade_ivc.mp4" type="video/mp4">
 </video>
 
-<div class="upload">
-Optional: Load local clip
-<input type="file" accept="video/*" onchange="loadVideo(event,'video1')">
+<div class="small">
+Required content (for instructor build):
+- Cardiac: pericardial effusion + RV diastolic collapse
+- Lung: minimal or absent B-lines (clear lungs)
+- IVC: plethoric, minimal collapse
 </div>
 
 <div class="grid">
@@ -123,21 +139,37 @@ Optional: Load local clip
 <label><input type="checkbox" value="9"> Plethoric IVC</label>
 </div>
 
-<button onclick="checkCase('case1','729', ['7','2','9'])">Submit</button>
+<button onclick="checkCase('case1',['7','2','9'],'msg1','case2')">Submit</button>
 <div class="msg" id="msg1"></div>
+</div>
+
+<!-- ENTRY GATE CASE 2 -->
+<div class="card hidden" id="gate2">
+<h2>Case Access</h2>
+<input id="entry2" placeholder="Enter access code" />
+<button onclick="unlock('entry2','VJXM','case2','msgGate2')">Unlock Case</button>
+<div class="msg" id="msgGate2"></div>
 </div>
 
 <!-- CASE 2 -->
 <div class="card hidden" id="case2">
 <h2>Case 2</h2>
 
-<video controls id="video2">
-    <source src="chf.mp4" type="video/mp4">
+<video controls>
+    <source src="chf_cardiac.mp4" type="video/mp4">
+</video>
+<video controls>
+    <source src="chf_lung.mp4" type="video/mp4">
+</video>
+<video controls>
+    <source src="chf_ivc.mp4" type="video/mp4">
 </video>
 
-<div class="upload">
-Optional: Load local clip
-<input type="file" accept="video/*" onchange="loadVideo(event,'video2')">
+<div class="small">
+Required content:
+- Cardiac: reduced LV systolic function
+- Lung: diffuse bilateral B-lines
+- IVC: plethoric, minimal collapse
 </div>
 
 <div class="grid">
@@ -148,21 +180,37 @@ Optional: Load local clip
 <label><input type="checkbox" value="7"> RV collapse</label>
 </div>
 
-<button onclick="checkCase('case2','639', ['6','3','9'])">Submit</button>
+<button onclick="checkCase('case2',['6','3','9'],'msg2','case3')">Submit</button>
 <div class="msg" id="msg2"></div>
+</div>
+
+<!-- ENTRY GATE CASE 3 -->
+<div class="card hidden" id="gate3">
+<h2>Case Access</h2>
+<input id="entry3" placeholder="Enter access code" />
+<button onclick="unlock('entry3','LPNC','case3','msgGate3')">Unlock Case</button>
+<div class="msg" id="msgGate3"></div>
 </div>
 
 <!-- CASE 3 -->
 <div class="card hidden" id="case3">
 <h2>Case 3</h2>
 
-<video controls id="video3">
-    <source src="ph.mp4" type="video/mp4">
+<video controls>
+    <source src="ph_cardiac.mp4" type="video/mp4">
+</video>
+<video controls>
+    <source src="ph_lung.mp4" type="video/mp4">
+</video>
+<video controls>
+    <source src="ph_ivc.mp4" type="video/mp4">
 </video>
 
-<div class="upload">
-Optional: Load local clip
-<input type="file" accept="video/*" onchange="loadVideo(event,'video3')">
+<div class="small">
+Required content:
+- Cardiac: RV dilation + septal flattening (D-sign)
+- Lung: clear or minimal B-lines
+- IVC: plethoric, minimal collapse
 </div>
 
 <div class="grid">
@@ -172,7 +220,7 @@ Optional: Load local clip
 <label><input type="checkbox" value="3"> B-lines</label>
 </div>
 
-<button onclick="checkCase('case3','489', ['4','8','9'])">Submit</button>
+<button onclick="checkCase('case3',['4','8','9'],'msg3','final')">Submit</button>
 <div class="msg" id="msg3"></div>
 </div>
 
@@ -185,44 +233,43 @@ Optional: Load local clip
 </div>
 
 <script>
-function loadVideo(event, id) {
-    const file = event.target.files[0];
-    const video = document.getElementById(id);
-    video.src = URL.createObjectURL(file);
-    video.load();
+function unlock(inputId, code, targetId, msgId){
+    const val = document.getElementById(inputId).value.trim();
+    if(val === code){
+        document.getElementById(targetId).classList.remove('hidden');
+        document.getElementById(msgId).innerHTML = '<span class="success">Case unlocked.</span>';
+    } else {
+        document.getElementById(msgId).innerHTML = '<span class="error">Incorrect access code.</span>';
+    }
 }
 
-function getSelected(containerId) {
-    const boxes = document.querySelectorAll(`#${containerId} input[type=checkbox]:checked`);
+function getSelected(container){
+    const boxes = document.querySelectorAll(`#${container} input[type=checkbox]:checked`);
     return Array.from(boxes).map(b => b.value);
 }
 
-function compareSets(selected, required) {
-    const sel = [...selected].sort();
-    const req = [...required].sort();
-
-    const missing = req.filter(x => !sel.includes(x));
-    const extra = sel.filter(x => !req.includes(x));
-
-    return { ok: missing.length === 0 && extra.length === 0, missing, extra };
+function compare(selected, required){
+    const s = [...selected].sort();
+    const r = [...required].sort();
+    const missing = r.filter(x => !s.includes(x));
+    const extra = s.filter(x => !r.includes(x));
+    return {ok: missing.length===0 && extra.length===0, missing, extra};
 }
 
-function checkCase(id, code, required) {
+function checkCase(id, required, msgId, nextId){
     const selected = getSelected(id);
-    const result = compareSets(selected, required);
-    const msg = document.getElementById('msg' + id.slice(-1));
+    const res = compare(selected, required);
+    const msg = document.getElementById(msgId);
 
-    if (result.ok) {
-        msg.innerHTML = `<span class='success'>Correct code unlocked.</span>`;
-
-        if (id === 'case1') document.getElementById('case2').classList.remove('hidden');
-        if (id === 'case2') document.getElementById('case3').classList.remove('hidden');
-        if (id === 'case3') document.getElementById('final').classList.remove('hidden');
-
+    if(res.ok){
+        msg.innerHTML = '<span class="success">Correct interpretation.</span>';
+        if(nextId && document.getElementById(nextId)){
+            document.getElementById(nextId).classList.remove('hidden');
+        }
     } else {
-        msg.innerHTML = `<span class='error'>Reassess findings.<br>
-        Missing: ${result.missing.join(', ') || 'none'}<br>
-        Extra: ${result.extra.join(', ') || 'none'}</span>`;
+        msg.innerHTML = '<span class="error">Reassess findings.<br>' +
+        'Missing: ' + (res.missing.join(', ') || 'none') + '<br>' +
+        'Extra: ' + (res.extra.join(', ') || 'none') + '</span>';
     }
 }
 </script>

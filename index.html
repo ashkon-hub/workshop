@@ -388,7 +388,7 @@ video{width:100%;border-radius:10px;border:1px solid var(--border);background:#0
 /* ════════════════════════════════════════
    INSTRUCTOR PASSWORD
 ════════════════════════════════════════ */
-const INSTRUCTOR_PW = 'POCUS2025';
+const INSTRUCTOR_PW = 'POCUS2026';
 
 /* ════════════════════════════════════════
    FINDINGS (fixed text, indexed 0–9)
@@ -986,6 +986,7 @@ function submitQuiz(n){
     qmsg.className='quiz-submit-msg success visible';
     casesDone++;updateProgress(casesDone);
     const nextSection=n<4?'case-section-'+(n+1):'case-section-done';
+    stopTensionSounds();
     if(n<4){
       SFX.quizCorrect();
       setTimeout(()=>transitionToCase(nextSection),900);

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>POCUS Cardiac Escape Room</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #0f172a;
+        color: #e2e8f0;
+    }
+    header {
+        padding: 16px;
+        text-align: center;
+        background: #1e293b;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .container {
+        padding: 16px;
+        max-width: 600px;
+        margin: auto;
+    }
+    .card {
+        background: #1e293b;
+        padding: 16px;
+        margin-bottom: 16px;
+        border-radius: 12px;
+    }
+    input {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        margin-top: 8px;
+        border-radius: 8px;
+        border: none;
+    }
+    button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 8px;
+        background: #38bdf8;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    button:hover {
+        background: #0ea5e9;
+    }
+    .hidden {
+        display: none;
+    }
+    .success {
+        color: #22c55e;
+        margin-top: 8px;
+    }
+    .hint {
+        font-size: 13px;
+        opacity: 0.8;
+        margin-top: 6px;
+    }
+</style>
+</head>
+<body>
+
+<header>
+POCUS Escape Room: Cardiac Shock Challenge
+</header>
+
+<div class="container">
+
+<!-- CASE 1 -->
+<div class="card">
+<h2>Case 1: Tamponade</h2>
+<p>Enter the 3-digit code from your interpretation station.</p>
+<input id="code1" placeholder="Enter code" />
+<button onclick="checkCode1()">Unlock</button>
+<div id="msg1" class="success hidden"></div>
+<p class="hint">Hint: Obstructive shock physiology</p>
+</div>
+
+<!-- CASE 2 -->
+<div id="case2" class="card hidden">
+<h2>Case 2: CHF Exacerbation</h2>
+<p>Enter the 3-digit code from your interpretation station.</p>
+<input id="code2" placeholder="Enter code" />
+<button onclick="checkCode2()">Unlock</button>
+<div id="msg2" class="success hidden"></div>
+<p class="hint">Hint: Pump failure + pulmonary congestion</p>
+</div>
+
+<!-- CASE 3 -->
+<div id="case3" class="card hidden">
+<h2>Case 3: Pulmonary Hypertensive Crisis</h2>
+<p>Enter the 3-digit code from your interpretation station.</p>
+<input id="code3" placeholder="Enter code" />
+<button onclick="checkCode3()">Unlock</button>
+<div id="msg3" class="success hidden"></div>
+<p class="hint">Hint: RV failure physiology</p>
+</div>
+
+<!-- FINAL -->
+<div id="final" class="card hidden">
+<h2>🎉 Final Challenge Complete</h2>
+<p>You have stabilized all patients.</p>
+<p><b>Debrief:</b> Compare how POCUS findings drove your diagnosis and management decisions.</p>
+</div>
+
+</div>
+
+<script>
+function checkCode1() {
+    const val = document.getElementById('code1').value.trim();
+    if (val === "729") {
+        document.getElementById('msg1').innerText = "Correct. Tamponade physiology confirmed.";
+        document.getElementById('msg1').classList.remove('hidden');
+        document.getElementById('case2').classList.remove('hidden');
+    } else {
+        alert("Incorrect code. Reassess findings.");
+    }
+}
+
+function checkCode2() {
+    const val = document.getElementById('code2').value.trim();
+    if (val === "639") {
+        document.getElementById('msg2').innerText = "Correct. Cardiogenic shock confirmed.";
+        document.getElementById('msg2').classList.remove('hidden');
+        document.getElementById('case3').classList.remove('hidden');
+    } else {
+        alert("Incorrect code. Reassess findings.");
+    }
+}
+
+function checkCode3() {
+    const val = document.getElementById('code3').value.trim();
+    if (val === "489") {
+        document.getElementById('msg3').innerText = "Correct. Pulmonary hypertensive crisis confirmed.";
+        document.getElementById('msg3').classList.remove('hidden');
+        document.getElementById('final').classList.remove('hidden');
+    } else {
+        alert("Incorrect code. Reassess findings.");
+    }
+}
+</script>
+
+</body>
+</html>

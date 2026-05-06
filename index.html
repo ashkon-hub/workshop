@@ -916,11 +916,13 @@ function submitFindings(n){
     playTensionSounds(1);
     sm.textContent='// FINDINGS CONFIRMED';sm.className='submit-msg success visible';
     // Show chips with DISPLAY numbers (what student sees)
-    $('bfchips-'+n).innerHTML=selectedOrig.map(origIdx=>{
-      const f=FINDINGS[origIdx];
-      const displayPos=displayNumOf(origIdx,c);
-      return `<div class="bf-chip">[${displayPos}] ${f.text}</div>`;
-    }).join('');
+    $('bfchips-'+n).innerHTML=selectedOrig
+      .filter(origIdx=>c.bfOriginalOrder.includes(origIdx))
+      .map(origIdx=>{
+        const f=FINDINGS[origIdx];
+        const displayPos=displayNumOf(origIdx,c);
+        return `<div class="bf-chip">[${displayPos}] ${f.text}</div>`;
+      }).join('');
     setTimeout(()=>show('bfsec-'+n),500);
   } else {
     SFX.wrong();

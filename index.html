@@ -309,7 +309,7 @@ video{width:100%;border-radius:10px;border:1px solid var(--border);background:#0
     </div>
     <div class="instr-step-row">
       <div class="instr-step-num">3</div>
-      <div class="instr-step-body"><strong>Identify all findings</strong>, arrange them in blood flow order to derive your sequence code.</div>
+      <div class="instr-step-body"><strong>Identify all findings</strong>, then arrange them in order of pathophysiologic cause and effect to derive your sequence code.</div>
     </div>
     <div class="instr-step-row">
       <div class="instr-step-num">4</div>
@@ -392,19 +392,19 @@ const INSTRUCTOR_PW = 'POCUS2025';
 
 /* ════════════════════════════════════════
    FINDINGS (fixed text, indexed 0–9)
-   Display numbers are session-assigned
+   Display numbers are case-assigned
 ════════════════════════════════════════ */
 const FINDINGS = [
   {n:0,text:'Collapsible IVC'},
   {n:1,text:'Pericardial effusion'},
   {n:2,text:'RV diastolic collapse'},
-  {n:3,text:'RV dilation'},
-  {n:4,text:'Septal flattening (D-sign)'},
-  {n:5,text:'Reduced LV systolic function'},
-  {n:6,text:'Hyperdynamic LV function'},
-  {n:7,text:'Diffuse B-lines'},
-  {n:8,text:'A-lines'},
-  {n:9,text:'Plethoric IVC'},
+  {n:3,text:'Septal flattening (D-sign)'},
+  {n:4,text:'Reduced LV systolic function'},
+  {n:5,text:'Hyperdynamic LV function'},
+  {n:6,text:'Diffuse B-lines'},
+  {n:7,text:'A-lines'},
+  {n:8,text:'Plethoric IVC'},
+  {n:9,text:'Free fluid in abdomen'},
 ];
 
 /* ════════════════════════════════════════
@@ -418,14 +418,14 @@ const CASES = [
     progressLabel:'SHOCK',title:'Undifferentiated Shock',
     vignette:'68-year-old male presenting with 3 hours of progressive dyspnea, hypotension (BP 82/54), and muffled heart sounds. Tachycardic and diaphoretic. History of recently treated lung adenocarcinoma.',
     views:[
-      {label:'Parasternal Long Axis (PSLA)',src:'videos/case1_cardiac.mp4'},
+      {label:'Parasternal Long Axis (PSLA)',src:'videos/case1_cardiac.mov'},
       {label:'Lung Fields',src:'videos/case1_lung.mp4'},
       {label:'IVC',src:'videos/case1_IVC.mp4'},
     ],
-    mapping:[7,3,9,1,5,0,4,2,8,6],
-    correct:[1,2,7,9],
-    bfOriginalOrder:[9,2,7,1],
-    bfLabels:['Plethoric IVC','RV Diastolic Collapse','Diffuse B-lines','Pericardial Effusion'],
+    mapping:[6,8,1,4,0,3,2,7,5,9],
+    correct:[1,2,7,8],
+    bfOriginalOrder:[1,2,8],
+    bfLabels:['Pericardial Effusion','RV Diastolic Collapse','Plethoric IVC'],
     quiz:{
       dx:{
         q:'What is the most likely diagnosis?',
@@ -462,10 +462,10 @@ const CASES = [
       {label:'Lung Fields',src:'videos/case2_lung.mp4'},
       {label:'IVC',src:'videos/case2_IVC.mp4'},
     ],
-    mapping:[5,1,8,4,6,9,2,0,7,3],
-    correct:[5,7,9],
-    bfOriginalOrder:[9,7,5],
-    bfLabels:['Plethoric IVC','Diffuse B-lines','Reduced LV Function'],
+    mapping:[4,1,7,3,5,8,2,0,6,9],
+    correct:[4,6,8],
+    bfOriginalOrder:[4,6,8],
+    bfLabels:['Reduced LV Function','Diffuse B-lines','Plethoric IVC'],
     quiz:{
       dx:{
         q:'What is the most likely diagnosis?',
@@ -502,10 +502,10 @@ const CASES = [
       {label:'Lung Fields',src:'videos/case3_lung.mp4'},
       {label:'IVC',src:'videos/case3_IVC.mp4'},
     ],
-    mapping:[4,6,0,8,2,5,9,1,3,7],
-    correct:[3,4,8,9],
-    bfOriginalOrder:[9,3,8,4],
-    bfLabels:['Plethoric IVC','RV Dilation','A-lines','Septal Flattening'],
+    mapping:[3,5,0,7,2,4,8,1,6,9],
+    correct:[3,7,8],
+    bfOriginalOrder:[7,3,8],
+    bfLabels:['A-lines','Septal Flattening','Plethoric IVC'],
     quiz:{
       dx:{
         q:'What is the most likely diagnosis?',
@@ -542,10 +542,10 @@ const CASES = [
       {label:'IVC',src:'videos/case4_IVC.mp4'},
       {label:'RUQ FAST (Morrison\'s)',src:'videos/case4_abdomen.mp4'},
     ],
-    mapping:[3,9,7,1,0,2,8,4,6,5],
-    correct:[0,6,8],
-    bfOriginalOrder:[0,8,6],
-    bfLabels:['Collapsible IVC','A-lines','Hyperdynamic LV'],
+    mapping:[8,6,3,9,1,0,2,5,7,4],
+    correct:[0,5,7,9],
+    bfOriginalOrder:[9,0,5],
+    bfLabels:['Free Fluid in Abdomen','Collapsible IVC','Hyperdynamic LV'],
     quiz:{
       dx:{
         q:'What is the most likely diagnosis?',
@@ -775,18 +775,20 @@ function renderCases(){
       <div id="bfsec-${c.n}" class="hidden">
         <hr class="divider"/>
         <div class="bf-box">
-          <div class="bf-title">// Derive Blood Flow Code</div>
+          <div class="bf-title">// Derive Pathophysiology Code</div>
           <p class="bf-instructions">
-            Correct findings identified. Arrange them in the direction of
-            <strong style="color:var(--text)">blood flow through the heart — from venous return through systemic outflow</strong> —
-            to generate your blood flow sequence. Enter the number sequence below (no spaces).
+            Correct findings identified. Arrange them in order of
+            <strong style="color:var(--text)">pathophysiologic cause and effect</strong>
+            to generate your sequence code.<br><br>
+            <span style="color:var(--text-dim);font-size:.8rem;">e.g. tension pneumothorax: pneumothorax &rarr; mediastinal shift &rarr; RV underfilling &rarr; plethoric IVC</span><br><br>
+            Enter the number sequence below (no spaces).
           </p>
           <div class="bf-chips" id="bfchips-${c.n}"></div>
           <div class="input-label">// Blood flow sequence</div>
           <input class="code-input" id="bfcode-${c.n}" placeholder="e.g. 1234" maxlength="4" style="letter-spacing:.3em;"
                  onkeydown="if(event.key==='Enter')submitBF(${c.n})"/>
           <div class="msg" id="bfmsg-${c.n}"></div>
-          <button class="btn-submit" onclick="submitBF(${c.n})">SUBMIT BLOOD FLOW CODE</button>
+          <button class="btn-submit" onclick="submitBF(${c.n})">SUBMIT SEQUENCE CODE</button>
         </div>
       </div>
 
@@ -833,7 +835,7 @@ function renderCases(){
         </svg>
       </div>
       <div class="done-title"><span>Mission Complete</span></div>
-      <p class="done-sub">All four cases resolved. You correctly identified POCUS findings, derived blood flow physiology, and synthesized clinical diagnoses and management across four shock states.</p>
+      <p class="done-sub">All four cases resolved. You correctly identified POCUS findings, derived pathophysiologic cause-and-effect sequences, and synthesized clinical diagnoses and management across four shock states.</p>
       <div class="debrief-grid">
         ${CASES.map(c=>`<div class="debrief-card ${c.dc}">
           <div class="dc-label">// CASE 0${c.n} \u2014 ${c.progressLabel}</div>
@@ -942,12 +944,12 @@ function submitBF(n){
     SFX.codeAccepted();
     playTensionSounds(2);
     inp.classList.add('success');
-    setMsg('bfmsg-'+n,'// BLOOD FLOW SEQUENCE CONFIRMED','success');
+    setMsg('bfmsg-'+n,'// SEQUENCE CONFIRMED','success');
     setTimeout(()=>show('quizsec-'+n),600);
   } else {
     SFX.wrong();
     inp.classList.remove('success');inp.classList.add('error');
-    setMsg('bfmsg-'+n,'// INCORRECT \u2014 RECONSIDER BLOOD FLOW ORDER','error');
+    setMsg('bfmsg-'+n,'// INCORRECT \u2014 RECONSIDER PATHOPHYSIOLOGIC ORDER','error');
     inp.classList.add('shake');
     setTimeout(()=>{inp.classList.remove('shake','error');inp.value='';inp.focus();},400);
   }
@@ -1288,10 +1290,10 @@ function buildInstructorContent(){
     ['Acquire images','Direct students to obtain the listed views on a real machine or simulator. Supervise as needed.'],
     ['Give video code','Once students have acquired the required views, provide the <strong>Video Code</strong> (table below). This unlocks the clips and numbered findings checklist.'],
     ['Identify findings','Students review clips and select all correct findings from the list (displayed 0–9 in order, with content randomly assigned per session). They then submit their selection.'],
-    ['Blood flow code','On correct submission, students are prompted to arrange their identified findings in <strong>blood flow order from venous return through systemic outflow</strong>. The resulting number sequence (based on this session\'s number assignments) is entered and validated by the app. See current session codes below.'],
+    ['Pathophysiology code','On correct submission, students are prompted to arrange their identified findings in order of <strong>pathophysiologic cause and effect</strong>. The resulting number sequence is entered and validated by the app. See current codes below.'],
     ['Clinical integration quiz','After confirming the blood flow code, a two-question quiz appears: <strong>most likely diagnosis</strong> and <strong>best initial management step</strong>. Students select A–E for each and submit. Both must be correct to advance.'],
     ['Advance','Correct quiz answers unlock the next case\'s scenario. Repeat steps 2–6 for each case.'],
-    ['Debrief','After Case 4\'s quiz is passed, the completion screen reveals all diagnoses with blood flow rationale.'],
+    ['Debrief','After Case 4\'s quiz is passed, the completion screen reveals all diagnoses with pathophysiologic sequence rationale.'],
   ];
 
   const bfCodes=CASES.map(c=>computeBFCode(c));
@@ -1306,7 +1308,7 @@ function buildInstructorContent(){
     <div class="isec-title">// VIDEO CODES &amp; ANSWERS</div>
     <div class="iinfo">All codes are fixed and consistent across all devices.</div>
     <table class="itbl">
-      <thead><tr><th>#</th><th>Diagnosis</th><th>Video Code</th><th>Blood Flow Code</th><th>Quiz Dx</th><th>Quiz Next Step</th></tr></thead>
+      <thead><tr><th>#</th><th>Diagnosis</th><th>Video Code</th><th>Sequence Code</th><th>Quiz Dx</th><th>Quiz Next Step</th></tr></thead>
       <tbody>
         ${CASES.map((c,i)=>`<tr>
           <td style="font-family:var(--mono);font-size:.82rem;">0${c.n}</td>
@@ -1322,7 +1324,7 @@ function buildInstructorContent(){
 
   <div class="isec">
     <div class="isec-title">// FINDING NUMBER ASSIGNMENTS PER CASE</div>
-    <div class="iinfo">Numbers 0–9 are displayed in order. Content is fixed per case — different each case to vary blood flow codes.</div>
+    <div class="iinfo">Numbers 0–9 are displayed in order. Content is fixed per case — different each case to vary sequence codes.</div>
     ${CASES.map(c=>`
       <div class="ibf-label" style="margin-bottom:8px;">CASE 0${c.n} — ${c.diagnosis.toUpperCase()}</div>
       <div class="mapping-grid" style="margin-bottom:20px;">
@@ -1335,7 +1337,7 @@ function buildInstructorContent(){
   </div>
 
   <div class="isec">
-    <div class="isec-title">// BLOOD FLOW RATIONALE (original finding names)</div>
+    <div class="isec-title">// PATHOPHYSIOLOGY SEQUENCE RATIONALE</div>
     ${CASES.map((c,i)=>`<div class="ibf-row">
       <div class="ibf-label">CASE 0${c.n} \u2014 ${c.diagnosis.toUpperCase()} \u2192 CODE: ${bfCodes[i]}</div>
       <div class="ibf-chain">

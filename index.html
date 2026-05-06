@@ -1,276 +1,966 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>POCUS Escape Room</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet"/>
 <style>
-    body {
-        font-family: system-ui, -apple-system, Arial;
-        margin: 0;
-        background: #0b1220;
-        color: #e5e7eb;
-    }
-    header {
-        padding: 14px;
-        text-align: center;
-        background: #111827;
-        font-weight: 700;
-        font-size: 16px;
-    }
-    .container {
-        max-width: 760px;
-        margin: auto;
-        padding: 14px;
-    }
-    .card {
-        background: #111827;
-        border-radius: 14px;
-        padding: 14px;
-        margin-bottom: 14px;
-    }
-    h2 { margin-top: 0; font-size: 18px; }
+/* ── Variables ───────────────────────────────────────────── */
+:root{
+  --bg:#050d18;
+  --surface:#0a1628;
+  --surface2:#0f1f38;
+  --border:#1a3050;
+  --cyan:#00d4ff;
+  --cyan-dim:#0098bb;
+  --cyan-glow:rgba(0,212,255,.18);
+  --amber:#ffb347;
+  --green:#39ff8a;
+  --red:#ff4d6d;
+  --text:#d4e8f5;
+  --text-dim:#6a8fa8;
+  --mono:'Share Tech Mono',monospace;
+  --sans:'Outfit',sans-serif;
+  --radius:14px;
+  --transition:0.38s cubic-bezier(.4,0,.2,1);
+}
 
-    input {
-        width: 100%;
-        padding: 12px;
-        border-radius: 10px;
-        border: none;
-        font-size: 16px;
-        margin-top: 8px;
-    }
+/* ── Reset ───────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
 
-    button {
-        width: 100%;
-        padding: 14px;
-        margin-top: 10px;
-        border-radius: 10px;
-        border: none;
-        font-weight: 700;
-        font-size: 16px;
-        background: #38bdf8;
-    }
+/* ── Scanline overlay ────────────────────────────────────── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,.06) 2px,
+    rgba(0,0,0,.06) 4px
+  );
+  pointer-events:none;
+  z-index:9999;
+}
 
-    button:active { transform: scale(0.98); }
+/* ── Noise grain ─────────────────────────────────────────── */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  pointer-events:none;
+  opacity:.5;
+  z-index:9998;
+}
 
-    video {
-        width: 100%;
-        border-radius: 10px;
-        margin-top: 10px;
-    }
+/* ── START SCREEN ────────────────────────────────────────── */
+#start{
+  position:fixed;inset:0;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:32px;
+  z-index:1000;
+  transition:opacity .6s ease, transform .6s ease;
+}
+#start.hiding{opacity:0;transform:scale(1.04);pointer-events:none;}
 
-    .grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 8px;
-        margin-top: 10px;
-    }
+.start-badge{
+  font-family:var(--mono);
+  font-size:.7rem;letter-spacing:.2em;
+  color:var(--cyan-dim);
+  text-transform:uppercase;
+  margin-bottom:24px;
+  display:flex;align-items:center;gap:10px;
+}
+.start-badge::before,.start-badge::after{
+  content:'';display:block;width:40px;height:1px;background:var(--cyan-dim);
+}
 
-    label {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        padding: 12px;
-        background: #0f172a;
-        border-radius: 10px;
-    }
+.start-title{
+  font-size:clamp(2.4rem,7vw,4rem);
+  font-weight:700;
+  line-height:1.1;
+  letter-spacing:-.02em;
+  margin-bottom:10px;
+}
+.start-title span{
+  background:linear-gradient(135deg,var(--cyan) 0%,#7ef9ff 60%,var(--cyan-dim) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
 
-    .msg {
-        margin-top: 10px;
-        font-size: 14px;
-    }
+.start-sub{
+  color:var(--text-dim);font-size:1rem;
+  margin-bottom:48px;max-width:380px;line-height:1.6;
+}
 
-    .success { color: #22c55e; }
-    .error { color: #ef4444; }
+.pulse-ring{
+  position:relative;display:inline-flex;
+  align-items:center;justify-content:center;
+  margin-bottom:48px;
+}
+.pulse-ring .icon{
+  width:90px;height:90px;
+  border:2px solid var(--cyan);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:1;
+  box-shadow:0 0 24px var(--cyan-glow),inset 0 0 24px var(--cyan-glow);
+}
+.pulse-ring .icon svg{width:40px;height:40px;stroke:var(--cyan);}
+@keyframes pulse-out{
+  0%{transform:scale(1);opacity:.6;}
+  100%{transform:scale(2.2);opacity:0;}
+}
+.pulse-ring::before,.pulse-ring::after{
+  content:'';position:absolute;
+  width:90px;height:90px;border-radius:50%;
+  border:1px solid var(--cyan);
+  animation:pulse-out 2.4s ease-out infinite;
+}
+.pulse-ring::after{animation-delay:1.2s;}
 
-    .hidden { display: none; }
+/* ── ENTER BUTTON ────────────────────────────────────────── */
+.btn-primary{
+  background:transparent;
+  border:1.5px solid var(--cyan);
+  color:var(--cyan);
+  font-family:var(--mono);
+  font-size:.9rem;letter-spacing:.15em;
+  padding:14px 44px;
+  border-radius:4px;
+  cursor:pointer;
+  position:relative;overflow:hidden;
+  transition:color .3s,box-shadow .3s;
+}
+.btn-primary::before{
+  content:'';position:absolute;inset:0;
+  background:var(--cyan);
+  transform:translateX(-101%);
+  transition:transform .3s ease;
+}
+.btn-primary:hover::before{transform:translateX(0);}
+.btn-primary:hover{color:var(--bg);box-shadow:0 0 30px var(--cyan-glow);}
+.btn-primary span{position:relative;z-index:1;}
 
-    .small {
-        font-size: 12px;
-        opacity: 0.8;
-        margin-top: 6px;
-        line-height: 1.3;
-    }
+/* ── HEADER ──────────────────────────────────────────────── */
+header{
+  background:rgba(10,22,40,.92);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  padding:0 20px;
+  height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
+.header-logo{
+  font-family:var(--mono);font-size:.85rem;
+  color:var(--cyan);letter-spacing:.08em;
+}
+.header-status{
+  font-family:var(--mono);font-size:.7rem;
+  color:var(--text-dim);letter-spacing:.1em;
+}
+
+/* ── PROGRESS BAR ────────────────────────────────────────── */
+.progress-track{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:20px 20px 0;
+}
+.progress-label{
+  font-family:var(--mono);font-size:.65rem;
+  letter-spacing:.15em;color:var(--text-dim);
+  text-transform:uppercase;margin-bottom:14px;
+}
+.progress-steps{
+  display:flex;align-items:center;gap:0;
+  max-width:560px;margin:0 auto 20px;
+}
+.step-node{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  flex:0 0 auto;
+}
+.step-dot{
+  width:32px;height:32px;border-radius:50%;
+  border:2px solid var(--border);
+  background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.75rem;
+  color:var(--text-dim);
+  transition:all .4s ease;
+  position:relative;
+}
+.step-dot.active{
+  border-color:var(--cyan);color:var(--cyan);
+  box-shadow:0 0 16px var(--cyan-glow);
+}
+.step-dot.done{
+  border-color:var(--green);background:var(--green);color:var(--bg);
+  box-shadow:0 0 16px rgba(57,255,138,.3);
+}
+.step-dot.done::after{
+  content:'✓';position:absolute;font-size:.8rem;
+}
+.step-label{
+  font-size:.6rem;font-family:var(--mono);
+  letter-spacing:.08em;color:var(--text-dim);
+  text-align:center;
+  transition:color .4s;
+}
+.step-label.active{color:var(--cyan);}
+.step-label.done{color:var(--green);}
+.step-line{
+  flex:1;height:2px;
+  background:var(--border);
+  position:relative;overflow:hidden;
+  margin-bottom:20px;
+}
+.step-line-fill{
+  position:absolute;left:0;top:0;bottom:0;width:0%;
+  background:linear-gradient(90deg,var(--green),var(--cyan));
+  transition:width .6s ease .1s;
+}
+.step-line-fill.full{width:100%;}
+
+/* ── MAIN CONTAINER ──────────────────────────────────────── */
+.container{max-width:680px;margin:0 auto;padding:24px 16px 80px;}
+
+/* ── CARD ────────────────────────────────────────────────── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:24px;
+  margin:20px 0;
+  position:relative;
+  overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan-dim),transparent);
+  opacity:.4;
+}
+
+/* ── ANIMATIONS ──────────────────────────────────────────── */
+.hidden{display:none!important;}
+
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(28px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.animate-in{animation:slideUp .45s ease forwards;}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-8px);}
+  40%{transform:translateX(8px);}
+  60%{transform:translateX(-5px);}
+  80%{transform:translateX(5px);}
+}
+.shake{animation:shake .4s ease;}
+
+@keyframes unlockPop{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.06);}
+  100%{transform:scale(1);}
+}
+.unlock-pop{animation:unlockPop .35s ease;}
+
+/* ── GATE SCREEN ─────────────────────────────────────────── */
+.gate-header{
+  display:flex;align-items:center;gap:14px;margin-bottom:20px;
+}
+.lock-icon{
+  width:44px;height:44px;border-radius:10px;
+  background:var(--surface2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  transition:all .4s ease;
+}
+.lock-icon svg{width:20px;height:20px;stroke:var(--text-dim);transition:stroke .4s;}
+.lock-icon.unlocked{border-color:var(--green);background:rgba(57,255,138,.08);}
+.lock-icon.unlocked svg{stroke:var(--green);}
+
+.gate-title{font-size:1.1rem;font-weight:600;}
+.gate-sub{font-size:.8rem;color:var(--text-dim);margin-top:3px;font-family:var(--mono);}
+
+.code-input-wrap{position:relative;margin:16px 0;}
+.code-input{
+  width:100%;padding:14px 16px;
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  color:var(--cyan);
+  font-family:var(--mono);
+  font-size:1.1rem;letter-spacing:.25em;text-transform:uppercase;
+  outline:none;
+  transition:border-color .3s,box-shadow .3s;
+  text-align:center;
+}
+.code-input::placeholder{color:var(--text-dim);letter-spacing:.1em;font-size:.8rem;}
+.code-input:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px var(--cyan-glow);
+}
+.code-input.error{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,77,109,.15);}
+.code-input.success{border-color:var(--green);box-shadow:0 0 0 3px rgba(57,255,138,.15);}
+
+.msg{
+  font-family:var(--mono);font-size:.75rem;
+  letter-spacing:.08em;margin-top:8px;text-align:center;
+  min-height:20px;transition:all .3s;
+}
+.msg.error{color:var(--red);}
+.msg.success{color:var(--green);}
+
+/* ── CASE CARD ───────────────────────────────────────────── */
+.case-label{
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+}
+.case-num{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;
+  color:var(--cyan);text-transform:uppercase;
+  background:rgba(0,212,255,.08);
+  border:1px solid rgba(0,212,255,.25);
+  padding:4px 10px;border-radius:4px;
+}
+.case-title{font-size:1.2rem;font-weight:700;}
+.vignette{
+  background:var(--surface2);
+  border-left:3px solid var(--cyan-dim);
+  border-radius:0 8px 8px 0;
+  padding:14px 16px;
+  font-size:.9rem;line-height:1.65;
+  color:var(--text-dim);
+  margin-bottom:20px;
+}
+
+/* ── VIDEO GRID ──────────────────────────────────────────── */
+.video-grid{display:grid;gap:12px;margin-bottom:20px;}
+.video-wrap{position:relative;}
+.video-label{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;
+  color:var(--text-dim);text-transform:uppercase;
+  margin-bottom:6px;display:flex;align-items:center;gap:8px;
+}
+.video-label::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--cyan);box-shadow:0 0 6px var(--cyan);
+  flex-shrink:0;
+}
+video{
+  width:100%;border-radius:10px;
+  border:1px solid var(--border);
+  background:#000;display:block;
+}
+
+/* ── FINDINGS ────────────────────────────────────────────── */
+.findings-title{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--text-dim);
+  margin-bottom:12px;
+}
+.findings{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.finding-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  cursor:pointer;
+  transition:border-color .25s,background .25s,box-shadow .25s;
+  user-select:none;
+}
+.finding-item:hover{border-color:var(--cyan-dim);background:rgba(0,212,255,.04);}
+.finding-item input[type=checkbox]{display:none;}
+.check-box{
+  width:20px;height:20px;border-radius:5px;
+  border:1.5px solid var(--border);
+  background:var(--surface);
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .25s;
+}
+.check-box svg{width:12px;height:12px;stroke:var(--bg);opacity:0;transition:opacity .2s;}
+.finding-item.checked{border-color:var(--cyan);background:rgba(0,212,255,.07);}
+.finding-item.checked .check-box{background:var(--cyan);border-color:var(--cyan);}
+.finding-item.checked .check-box svg{opacity:1;}
+.finding-text{font-size:.9rem;}
+
+/* ── SUBMIT BUTTON ───────────────────────────────────────── */
+.btn-submit{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,#006d8f,var(--cyan-dim));
+  border:none;border-radius:10px;
+  color:#fff;font-family:var(--mono);
+  font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;
+  cursor:pointer;
+  position:relative;overflow:hidden;
+  transition:opacity .3s,box-shadow .3s;
+  box-shadow:0 4px 20px rgba(0,212,255,.15);
+}
+.btn-submit::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.08),transparent);
+}
+.btn-submit:hover{opacity:.9;box-shadow:0 4px 30px rgba(0,212,255,.3);}
+.btn-submit:active{transform:scale(.99);}
+
+/* ── SUBMIT FEEDBACK ─────────────────────────────────────── */
+.submit-msg{
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;
+  text-align:center;padding:10px;border-radius:8px;
+  margin-top:10px;min-height:0;
+  opacity:0;transition:opacity .3s;
+}
+.submit-msg.visible{opacity:1;}
+.submit-msg.error{color:var(--red);background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);}
+.submit-msg.success{color:var(--green);background:rgba(57,255,138,.07);border:1px solid rgba(57,255,138,.2);}
+
+/* ── COMPLETION SCREEN ───────────────────────────────────── */
+#done{text-align:center;}
+.done-glow{
+  width:110px;height:110px;
+  margin:0 auto 28px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(57,255,138,.25) 0%,transparent 70%);
+  border:2px solid var(--green);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 50px rgba(57,255,138,.2);
+  animation:completePulse 3s ease-in-out infinite;
+}
+@keyframes completePulse{
+  0%,100%{box-shadow:0 0 50px rgba(57,255,138,.2);}
+  50%{box-shadow:0 0 80px rgba(57,255,138,.4);}
+}
+.done-glow svg{width:48px;height:48px;stroke:var(--green);}
+
+.done-title{font-size:2rem;font-weight:700;margin-bottom:10px;}
+.done-title span{
+  background:linear-gradient(135deg,var(--green),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.done-sub{color:var(--text-dim);font-size:.95rem;line-height:1.6;margin-bottom:36px;max-width:420px;margin-left:auto;margin-right:auto;}
+
+.debrief-grid{display:flex;flex-direction:column;gap:14px;text-align:left;}
+.debrief-card{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:12px;padding:18px;
+  position:relative;overflow:hidden;
+}
+.debrief-card::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
+}
+.debrief-card.t1::before{background:var(--cyan);}
+.debrief-card.t2::before{background:var(--amber);}
+.debrief-card.t3::before{background:var(--red);}
+
+.debrief-case{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;
+}
+.debrief-dx{font-size:1rem;font-weight:600;margin-bottom:10px;}
+.debrief-findings{
+  display:flex;flex-wrap:wrap;gap:6px;
+}
+.debrief-finding{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.06em;
+  padding:4px 10px;border-radius:4px;
+  border:1px solid var(--border);color:var(--text-dim);
+}
+.debrief-card.t1 .debrief-finding{border-color:rgba(0,212,255,.3);color:var(--cyan-dim);}
+.debrief-card.t2 .debrief-finding{border-color:rgba(255,179,71,.3);color:var(--amber);}
+.debrief-card.t3 .debrief-finding{border-color:rgba(255,77,109,.3);color:var(--red);}
+
+.restart-btn{
+  margin-top:32px;
+  background:transparent;
+  border:1.5px solid var(--border);
+  color:var(--text-dim);
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.15em;
+  padding:12px 28px;border-radius:6px;cursor:pointer;
+  transition:border-color .3s,color .3s;
+}
+.restart-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media(max-width:480px){
+  .card{padding:18px;}
+  .start-title{font-size:2.2rem;}
+}
 </style>
 </head>
 <body>
 
-<header>POCUS Escape Room</header>
+<!-- ═══════════════════════════════════════════════════════
+     START SCREEN
+═══════════════════════════════════════════════════════ -->
+<div id="start">
+  <div class="start-badge"><span>POCUS Simulation Lab</span></div>
 
-<div class="container">
+  <div class="pulse-ring">
+    <div class="icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+      </svg>
+    </div>
+  </div>
 
-<!-- ENTRY GATE CASE 1 -->
-<div class="card" id="gate1">
-<h2>Case Access</h2>
-<input id="entry1" placeholder="Enter access code" />
-<button onclick="unlock('entry1','KQTR','case1','msgGate1')">Unlock Case</button>
-<div class="msg" id="msgGate1"></div>
+  <h1 class="start-title"><span>Cardiac Escape</span></h1>
+  <p class="start-sub">Three cases. Three diagnoses waiting to be inferred. Interpret what you see — no labels, no shortcuts.</p>
+
+  <button class="btn-primary" onclick="startApp()"><span>INITIATE SEQUENCE</span></button>
 </div>
 
-<!-- CASE 1 -->
-<div class="card hidden" id="case1">
-<h2>Case 1</h2>
+<!-- ═══════════════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════════════ -->
+<header id="app-header" class="hidden">
+  <div class="header-logo">POCUS // ESCAPE ROOM</div>
+  <div class="header-status" id="header-status">CASE 1 OF 3</div>
+</header>
 
-<video controls>
-    <source src="tamponade_cardiac.mp4" type="video/mp4">
-</video>
-<video controls>
-    <source src="tamponade_lung.mp4" type="video/mp4">
-</video>
-<video controls>
-    <source src="tamponade_ivc.mp4" type="video/mp4">
-</video>
-
-<div class="small">
-Required content (for instructor build):
-- Cardiac: pericardial effusion + RV diastolic collapse
-- Lung: minimal or absent B-lines (clear lungs)
-- IVC: plethoric, minimal collapse
+<!-- ═══════════════════════════════════════════════════════
+     PROGRESS
+═══════════════════════════════════════════════════════ -->
+<div class="progress-track hidden" id="progress-track">
+  <div class="container" style="padding:0 16px;">
+    <div class="progress-label">MISSION PROGRESS</div>
+    <div class="progress-steps">
+      <div class="step-node">
+        <div class="step-dot active" id="dot1">1</div>
+        <div class="step-label active" id="lbl1">TAMPONADE</div>
+      </div>
+      <div class="step-line"><div class="step-line-fill" id="line1"></div></div>
+      <div class="step-node">
+        <div class="step-dot" id="dot2">2</div>
+        <div class="step-label" id="lbl2">VOLUME OVL</div>
+      </div>
+      <div class="step-line"><div class="step-line-fill" id="line2"></div></div>
+      <div class="step-node">
+        <div class="step-dot" id="dot3">3</div>
+        <div class="step-label" id="lbl3">RV FAILURE</div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="grid">
-<label><input type="checkbox" value="2"> Pericardial effusion</label>
-<label><input type="checkbox" value="7"> RV diastolic collapse</label>
-<label><input type="checkbox" value="4"> RV dilation</label>
-<label><input type="checkbox" value="8"> Septal flattening</label>
-<label><input type="checkbox" value="1"> Hyperdynamic LV</label>
-<label><input type="checkbox" value="6"> Reduced LV function</label>
-<label><input type="checkbox" value="3"> Diffuse B-lines</label>
-<label><input type="checkbox" value="9"> Plethoric IVC</label>
-</div>
+<!-- ═══════════════════════════════════════════════════════
+     MAIN
+═══════════════════════════════════════════════════════ -->
+<div class="container" id="main-container" style="display:none;">
 
-<button onclick="checkCase('case1',['7','2','9'],'msg1','case2')">Submit</button>
-<div class="msg" id="msg1"></div>
-</div>
+  <!-- GATE 1 -->
+  <div class="card hidden" id="gate1">
+    <div class="gate-header">
+      <div class="lock-icon" id="lock1">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <div>
+        <div class="gate-title">Case 1 Access</div>
+        <div class="gate-sub">// ENTER ACCESS CODE</div>
+      </div>
+    </div>
+    <div class="code-input-wrap">
+      <input class="code-input" id="c1code" placeholder="· · · ·" maxlength="4"
+             onkeydown="if(event.key==='Enter')unlock('c1code','KQTR','case1','m1','lock1')"/>
+    </div>
+    <div class="msg" id="m1"></div>
+    <button class="btn-submit" onclick="unlock('c1code','KQTR','case1','m1','lock1')">
+      SUBMIT CODE
+    </button>
+  </div>
 
-<!-- ENTRY GATE CASE 2 -->
-<div class="card hidden" id="gate2">
-<h2>Case Access</h2>
-<input id="entry2" placeholder="Enter access code" />
-<button onclick="unlock('entry2','VJXM','case2','msgGate2')">Unlock Case</button>
-<div class="msg" id="msgGate2"></div>
-</div>
+  <!-- CASE 1 -->
+  <div class="card hidden" id="case1">
+    <div class="case-label">
+      <span class="case-num">CASE 01</span>
+    </div>
+    <div class="case-title">Undifferentiated Shock</div>
+    <div class="vignette">
+      68-year-old male presenting with 3 hours of progressive dyspnea, hypotension (BP 82/54), and muffled heart sounds. Tachycardic, diaphoretic. History of recently treated lung adenocarcinoma.
+    </div>
 
-<!-- CASE 2 -->
-<div class="card hidden" id="case2">
-<h2>Case 2</h2>
+    <div class="video-grid">
+      <div class="video-wrap">
+        <div class="video-label">Cardiac Window</div>
+        <video controls src="videos/case1_cardiac.mp4"></video>
+      </div>
+      <div class="video-wrap">
+        <div class="video-label">Lung Fields</div>
+        <video controls src="videos/case1_lung.mp4"></video>
+      </div>
+      <div class="video-wrap">
+        <div class="video-label">IVC Assessment</div>
+        <video controls src="videos/case1_ivc.mp4"></video>
+      </div>
+    </div>
 
-<video controls>
-    <source src="chf_cardiac.mp4" type="video/mp4">
-</video>
-<video controls>
-    <source src="chf_lung.mp4" type="video/mp4">
-</video>
-<video controls>
-    <source src="chf_ivc.mp4" type="video/mp4">
-</video>
+    <div class="findings-title">// SELECT ALL FINDINGS</div>
+    <div class="findings" id="findings-case1">
+      <label class="finding-item" onclick="toggleCheck(this)">
+        <input type="checkbox" value="eff">
+        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <span class="finding-text">Pericardial effusion</span>
+      </label>
+      <label class="finding-item" onclick="toggleCheck(this)">
+        <input type="checkbox" value="rvcol">
+        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <span class="finding-text">RV diastolic collapse</span>
+      </label>
+      <label class="finding-item" onclick="toggleCheck(this)">
+        <input type="checkbox" value="ivc">
+        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <span class="finding-text">Plethoric IVC</span>
+      </label>
+    </div>
 
-<div class="small">
-Required content:
-- Cardiac: reduced LV systolic function
-- Lung: diffuse bilateral B-lines
-- IVC: plethoric, minimal collapse
-</div>
+    <button class="btn-submit" onclick="submitCase('case1',['rvcol','eff','ivc'],'gate2','sm1')">
+      SUBMIT FINDINGS
+    </button>
+    <div class="submit-msg" id="sm1"></div>
+  </div>
 
-<div class="grid">
-<label><input type="checkbox" value="6"> Reduced LV function</label>
-<label><input type="checkbox" value="3"> Diffuse B-lines</label>
-<label><input type="checkbox" value="9"> Plethoric IVC</label>
-<label><input type="checkbox" value="2"> Pericardial effusion</label>
-<label><input type="checkbox" value="7"> RV collapse</label>
-</div>
+  <!-- GATE 2 -->
+  <div class="card hidden" id="gate2">
+    <div class="gate-header">
+      <div class="lock-icon" id="lock2">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <div>
+        <div class="gate-title">Case 2 Access</div>
+        <div class="gate-sub">// ENTER ACCESS CODE</div>
+      </div>
+    </div>
+    <div class="code-input-wrap">
+      <input class="code-input" id="c2code" placeholder="· · · ·" maxlength="4"
+             onkeydown="if(event.key==='Enter')unlock('c2code','VJXM','case2','m2','lock2')"/>
+    </div>
+    <div class="msg" id="m2"></div>
+    <button class="btn-submit" onclick="unlock('c2code','VJXM','case2','m2','lock2')">
+      SUBMIT CODE
+    </button>
+  </div>
 
-<button onclick="checkCase('case2',['6','3','9'],'msg2','case3')">Submit</button>
-<div class="msg" id="msg2"></div>
-</div>
+  <!-- CASE 2 -->
+  <div class="card hidden" id="case2">
+    <div class="case-label">
+      <span class="case-num">CASE 02</span>
+    </div>
+    <div class="case-title">Dyspnea &amp; Lower Extremity Edema</div>
+    <div class="vignette">
+      54-year-old female with known cardiomyopathy presents with 5-day history of worsening exertional dyspnea, 2-pillow orthopnea, and bilateral pitting edema to the knees. Crackles bilaterally at bases. Denies recent medication compliance.
+    </div>
 
-<!-- ENTRY GATE CASE 3 -->
-<div class="card hidden" id="gate3">
-<h2>Case Access</h2>
-<input id="entry3" placeholder="Enter access code" />
-<button onclick="unlock('entry3','LPNC','case3','msgGate3')">Unlock Case</button>
-<div class="msg" id="msgGate3"></div>
-</div>
+    <div class="video-grid">
+      <div class="video-wrap">
+        <div class="video-label">Cardiac Window</div>
+        <video controls src="videos/case2_cardiac.mp4"></video>
+      </div>
+      <div class="video-wrap">
+        <div class="video-label">Lung Fields</div>
+        <video controls src="videos/case2_lung.mp4"></video>
+      </div>
+      <div class="video-wrap">
+        <div class="video-label">IVC Assessment</div>
+        <video controls src="videos/case2_ivc.mp4"></video>
+      </div>
+    </div>
 
-<!-- CASE 3 -->
-<div class="card hidden" id="case3">
-<h2>Case 3</h2>
+    <div class="findings-title">// SELECT ALL FINDINGS</div>
+    <div class="findings" id="findings-case2">
+      <label class="finding-item" onclick="toggleCheck(this)">
+        <input type="checkbox" value="lv">
+        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <span class="finding-text">Reduced LV systolic function</span>
+      </label>
+      <label class="finding-item" onclick="toggleCheck(this)">
+        <input type="checkbox" value="bl">
+        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <span class="finding-text">Diffuse B-lines</span>
+      </label>
+      <label class="finding-item" onclick="toggleCheck(this)">
+        <input type="checkbox" value="ivc">
+        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <span class="finding-text">Plethoric IVC</span>
+      </label>
+    </div>
 
-<video controls>
-    <source src="ph_cardiac.mp4" type="video/mp4">
-</video>
-<video controls>
-    <source src="ph_lung.mp4" type="video/mp4">
-</video>
-<video controls>
-    <source src="ph_ivc.mp4" type="video/mp4">
-</video>
+    <button class="btn-submit" onclick="submitCase('case2',['lv','bl','ivc'],'gate3','sm2')">
+      SUBMIT FINDINGS
+    </button>
+    <div class="submit-msg" id="sm2"></div>
+  </div>
 
-<div class="small">
-Required content:
-- Cardiac: RV dilation + septal flattening (D-sign)
-- Lung: clear or minimal B-lines
-- IVC: plethoric, minimal collapse
-</div>
+  <!-- GATE 3 -->
+  <div class="card hidden" id="gate3">
+    <div class="gate-header">
+      <div class="lock-icon" id="lock3">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <div>
+        <div class="gate-title">Case 3 Access</div>
+        <div class="gate-sub">// ENTER ACCESS CODE</div>
+      </div>
+    </div>
+    <div class="code-input-wrap">
+      <input class="code-input" id="c3code" placeholder="· · · ·" maxlength="4"
+             onkeydown="if(event.key==='Enter')unlock('c3code','LPNC','case3','m3','lock3')"/>
+    </div>
+    <div class="msg" id="m3"></div>
+    <button class="btn-submit" onclick="unlock('c3code','LPNC','case3','m3','lock3')">
+      SUBMIT CODE
+    </button>
+  </div>
 
-<div class="grid">
-<label><input type="checkbox" value="4"> RV dilation</label>
-<label><input type="checkbox" value="8"> Septal flattening</label>
-<label><input type="checkbox" value="9"> Plethoric IVC</label>
-<label><input type="checkbox" value="3"> B-lines</label>
-</div>
+  <!-- CASE 3 -->
+  <div class="card hidden" id="case3">
+    <div class="case-label">
+      <span class="case-num">CASE 03</span>
+    </div>
+    <div class="case-title">Cardiopulmonary Collapse</div>
+    <div class="vignette">
+      42-year-old male with untreated obstructive sleep apnea presents with acute onset dyspnea, syncope, and pleuritic chest pain. O₂ saturation 84% on room air. JVD present, no peripheral edema, lungs clear to auscultation.
+    </div>
 
-<button onclick="checkCase('case3',['4','8','9'],'msg3','final')">Submit</button>
-<div class="msg" id="msg3"></div>
-</div>
+    <div class="video-grid">
+      <div class="video-wrap">
+        <div class="video-label">Cardiac Window</div>
+        <video controls src="videos/case3_cardiac.mp4"></video>
+      </div>
+      <div class="video-wrap">
+        <div class="video-label">Lung Fields</div>
+        <video controls src="videos/case3_lung.mp4"></video>
+      </div>
+      <div class="video-wrap">
+        <div class="video-label">IVC Assessment</div>
+        <video controls src="videos/case3_ivc.mp4"></video>
+      </div>
+    </div>
 
-<!-- FINAL -->
-<div class="card hidden" id="final">
-<h2>Complete</h2>
-<p>All cases solved.</p>
-</div>
+    <div class="findings-title">// SELECT ALL FINDINGS</div>
+    <div class="findings" id="findings-case3">
+      <label class="finding-item" onclick="toggleCheck(this)">
+        <input type="checkbox" value="rv">
+        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <span class="finding-text">RV dilation</span>
+      </label>
+      <label class="finding-item" onclick="toggleCheck(this)">
+        <input type="checkbox" value="sept">
+        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <span class="finding-text">Septal flattening (D-sign)</span>
+      </label>
+      <label class="finding-item" onclick="toggleCheck(this)">
+        <input type="checkbox" value="ivc">
+        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <span class="finding-text">Plethoric IVC</span>
+      </label>
+    </div>
 
-</div>
+    <button class="btn-submit" onclick="submitCase('case3',['rv','sept','ivc'],'done','sm3')">
+      SUBMIT FINDINGS
+    </button>
+    <div class="submit-msg" id="sm3"></div>
+  </div>
+
+  <!-- COMPLETION -->
+  <div class="card hidden" id="done">
+    <div class="done-glow">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+        <path d="m9 12 2 2 4-4"/>
+      </svg>
+    </div>
+
+    <div class="done-title"><span>Mission Complete</span></div>
+    <p class="done-sub">All three cases resolved. You correctly identified the POCUS findings across tamponade physiology, volume overload, and right heart failure.</p>
+
+    <div class="debrief-grid">
+      <div class="debrief-card t1">
+        <div class="debrief-case">// CASE 01 — CARDIAC TAMPONADE</div>
+        <div class="debrief-dx">Pericardial Tamponade</div>
+        <div class="debrief-findings">
+          <span class="debrief-finding">Pericardial effusion</span>
+          <span class="debrief-finding">RV diastolic collapse</span>
+          <span class="debrief-finding">Plethoric IVC</span>
+        </div>
+      </div>
+      <div class="debrief-card t2">
+        <div class="debrief-case">// CASE 02 — ACUTE DECOMPENSATED HEART FAILURE</div>
+        <div class="debrief-dx">CHF Exacerbation</div>
+        <div class="debrief-findings">
+          <span class="debrief-finding">Reduced LV systolic function</span>
+          <span class="debrief-finding">Diffuse B-lines</span>
+          <span class="debrief-finding">Plethoric IVC</span>
+        </div>
+      </div>
+      <div class="debrief-card t3">
+        <div class="debrief-case">// CASE 03 — PULMONARY HTN / RV FAILURE</div>
+        <div class="debrief-dx">RV Failure</div>
+        <div class="debrief-findings">
+          <span class="debrief-finding">RV dilation</span>
+          <span class="debrief-finding">Septal flattening (D-sign)</span>
+          <span class="debrief-finding">Plethoric IVC</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="restart-btn" onclick="location.reload()">↩ RESTART SIMULATION</button>
+  </div>
+
+</div><!-- /container -->
 
 <script>
-function unlock(inputId, code, targetId, msgId){
-    const val = document.getElementById(inputId).value.trim();
-    if(val === code){
-        document.getElementById(targetId).classList.remove('hidden');
-        document.getElementById(msgId).innerHTML = '<span class="success">Case unlocked.</span>';
-    } else {
-        document.getElementById(msgId).innerHTML = '<span class="error">Incorrect access code.</span>';
-    }
+/* ── State ─────────────────────────────────────────── */
+let casesDone = 0;
+
+/* ── Start ─────────────────────────────────────────── */
+function startApp(){
+  const s = document.getElementById('start');
+  s.classList.add('hiding');
+  setTimeout(()=>{
+    s.classList.add('hidden');
+    document.getElementById('app-header').classList.remove('hidden');
+    document.getElementById('progress-track').classList.remove('hidden');
+    document.getElementById('main-container').style.display = 'block';
+    showEl('gate1');
+  }, 600);
 }
 
-function getSelected(container){
-    const boxes = document.querySelectorAll(`#${container} input[type=checkbox]:checked`);
-    return Array.from(boxes).map(b => b.value);
+/* ── Reveal helper ─────────────────────────────────── */
+function showEl(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.remove('hidden');
+  el.classList.add('animate-in');
+  setTimeout(()=> el.scrollIntoView({behavior:'smooth',block:'start'}), 80);
 }
 
-function compare(selected, required){
-    const s = [...selected].sort();
-    const r = [...required].sort();
-    const missing = r.filter(x => !s.includes(x));
-    const extra = s.filter(x => !r.includes(x));
-    return {ok: missing.length===0 && extra.length===0, missing, extra};
+/* ── Toggle checkbox ───────────────────────────────── */
+function toggleCheck(label){
+  const cb = label.querySelector('input[type=checkbox]');
+  cb.checked = !cb.checked;
+  label.classList.toggle('checked', cb.checked);
 }
 
-function checkCase(id, required, msgId, nextId){
-    const selected = getSelected(id);
-    const res = compare(selected, required);
-    const msg = document.getElementById(msgId);
+/* ── Unlock gate ────────────────────────────────────── */
+function unlock(inputId, code, caseId, msgId, lockId){
+  const input = document.getElementById(inputId);
+  const msg   = document.getElementById(msgId);
+  const lock  = document.getElementById(lockId);
+  const val   = input.value.trim().toUpperCase();
 
-    if(res.ok){
-        msg.innerHTML = '<span class="success">Correct interpretation.</span>';
-        if(nextId && document.getElementById(nextId)){
-            document.getElementById(nextId).classList.remove('hidden');
-        }
-    } else {
-        msg.innerHTML = '<span class="error">Reassess findings.<br>' +
-        'Missing: ' + (res.missing.join(', ') || 'none') + '<br>' +
-        'Extra: ' + (res.extra.join(', ') || 'none') + '</span>';
-    }
+  if(val === code){
+    input.classList.remove('error');
+    input.classList.add('success');
+    msg.textContent = '// ACCESS GRANTED';
+    msg.className = 'msg success';
+
+    lock.classList.add('unlocked');
+    lock.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2"/>
+      <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+    </svg>`;
+
+    setTimeout(()=> showEl(caseId), 400);
+  } else {
+    input.classList.remove('success');
+    input.classList.add('error');
+    msg.textContent = '// INVALID CODE — RETRY';
+    msg.className = 'msg error';
+    input.classList.add('shake');
+    setTimeout(()=> input.classList.remove('shake'), 400);
+    input.value = '';
+    input.focus();
+  }
+}
+
+/* ── Get checked values ─────────────────────────────── */
+function getChecked(caseId){
+  return [...document.querySelectorAll('#'+caseId+' input[type=checkbox]:checked')]
+    .map(x => x.value);
+}
+
+/* ── Submit case ────────────────────────────────────── */
+function submitCase(caseId, required, nextId, smId){
+  const selected = getChecked(caseId);
+  const ok = required.length === selected.length &&
+             required.every(r => selected.includes(r));
+  const sm = document.getElementById(smId);
+
+  if(ok){
+    sm.textContent = '// FINDINGS CONFIRMED — CASE RESOLVED';
+    sm.className = 'submit-msg success visible';
+    casesDone++;
+    updateProgress(casesDone);
+
+    setTimeout(()=>{
+      showEl(nextId);
+      if(nextId === 'done') updateProgress(3);
+    }, 700);
+  } else {
+    sm.textContent = '// FINDINGS INCOMPLETE OR INCORRECT — REASSESS';
+    sm.className = 'submit-msg error visible';
+
+    const card = document.getElementById(caseId);
+    card.classList.add('shake');
+    setTimeout(()=> card.classList.remove('shake'), 400);
+
+    setTimeout(()=>{
+      sm.classList.remove('visible');
+    }, 3500);
+  }
+}
+
+/* ── Progress bar ───────────────────────────────────── */
+function updateProgress(done){
+  const dots  = [null,'dot1','dot2','dot3'];
+  const lbls  = [null,'lbl1','lbl2','lbl3'];
+  const lines = [null,'line1','line2'];
+  const statuses = ['CASE 1 OF 3','CASE 1 OF 3','CASE 2 OF 3','CASE 3 OF 3'];
+
+  document.getElementById('header-status').textContent = statuses[done] || 'COMPLETE';
+
+  // Mark done dots
+  for(let i=1; i<=done; i++){
+    const d = document.getElementById(dots[i]);
+    const l = document.getElementById(lbls[i]);
+    if(d){ d.className = 'step-dot done'; d.textContent = ''; }
+    if(l){ l.className = 'step-label done'; }
+    if(i<=2){ const ln=document.getElementById(lines[i]); if(ln) ln.classList.add('full'); }
+  }
+
+  // Mark next active
+  if(done < 3){
+    const next = done + 1;
+    const d = document.getElementById(dots[next]);
+    const l = document.getElementById(lbls[next]);
+    if(d && !d.classList.contains('done')){ d.className='step-dot active'; }
+    if(l && !l.classList.contains('done')){ l.className='step-label active'; }
+  }
+
+  if(done===3){
+    document.getElementById('header-status').textContent = '✓ COMPLETE';
+  }
 }
 </script>
 

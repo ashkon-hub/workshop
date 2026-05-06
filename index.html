@@ -10,7 +10,7 @@
   --bg:#050d18;--surface:#0a1628;--surface2:#0f1f38;--border:#1a3050;
   --cyan:#00d4ff;--cyan-dim:#0098bb;--cyan-glow:rgba(0,212,255,.18);
   --amber:#ffb347;--green:#39ff8a;--red:#ff4d6d;--purple:#c084fc;
-  --text:#d4e8f5;--text-dim:#6a8fa8;
+  --text:#d4e8f5;--text-dim:#9cbdd4;
   --mono:'Share Tech Mono',monospace;--sans:'Outfit',sans-serif;--radius:14px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -43,7 +43,7 @@ header{background:rgba(10,22,40,.94);backdrop-filter:blur(10px);border-bottom:1p
 .header-logo{font-family:var(--mono);font-size:.82rem;color:var(--cyan);letter-spacing:.08em;}
 .header-right{display:flex;align-items:center;gap:20px;}
 .header-status{font-family:var(--mono);font-size:.68rem;color:var(--text-dim);letter-spacing:.1em;}
-.instr-link{font-family:var(--mono);font-size:.62rem;color:var(--text-dim);letter-spacing:.1em;cursor:pointer;opacity:.4;transition:opacity .2s,color .2s;}
+.instr-link{font-family:var(--mono);font-size:.62rem;color:var(--text-dim);letter-spacing:.1em;cursor:pointer;opacity:.75;transition:opacity .2s,color .2s;}
 .instr-link:hover{opacity:1;color:var(--amber);}
 
 /* ── PROGRESS ── */
@@ -325,6 +325,10 @@ video{width:100%;border-radius:10px;border:1px solid var(--border);background:#0
   <button class="btn-enter" onclick="enterEscapeRoom()">
     <span>Tap to enter Cardiac Escape Room</span>
   </button>
+
+  <div style="margin-top:20px;">
+    <span class="instr-link" onclick="openInstructor()" style="opacity:.75;font-size:.68rem;">⚙ INSTRUCTOR</span>
+  </div>
 </div>
 
 <!-- START -->
@@ -761,7 +765,7 @@ function renderCases(){
     h+=`<div class="card hidden" id="videos-${c.n}">
       <div class="case-badge">CASE 0${c.n} \u2014 VIDEO REVIEW</div>
       <div class="video-grid">
-        ${c.views.map(v=>`<div><div class="vid-label">${v.label}</div><video controls src="${v.src}"></video></div>`).join('')}
+        ${c.views.map(v=>`<div><div class="vid-label">${v.label}</div><video controls loop src="${v.src}"></video></div>`).join('')}
       </div>
       <div class="findings-title">// Select all findings present</div>
       <div class="findings-list" id="findings-${c.n}"></div>
@@ -1333,7 +1337,7 @@ function buildInstructorContent(){
   <div class="isec">
     <div class="isec-title">// BLOOD FLOW RATIONALE (original finding names)</div>
     ${CASES.map((c,i)=>`<div class="ibf-row">
-      <div class="ibf-label">CASE 0${c.n} \u2014 ${c.diagnosis.toUpperCase()} \u2192 SESSION CODE: ${sessionBFCodes[i]}</div>
+      <div class="ibf-label">CASE 0${c.n} \u2014 ${c.diagnosis.toUpperCase()} \u2192 CODE: ${bfCodes[i]}</div>
       <div class="ibf-chain">
         ${c.bfLabels.map((label,j)=>`
           <div class="ibf-node">${label}</div>

@@ -6,511 +6,239 @@
 <title>POCUS Escape Room</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet"/>
 <style>
-/* ── Variables ───────────────────────────────────────────── */
 :root{
-  --bg:#050d18;
-  --surface:#0a1628;
-  --surface2:#0f1f38;
-  --border:#1a3050;
-  --cyan:#00d4ff;
-  --cyan-dim:#0098bb;
-  --cyan-glow:rgba(0,212,255,.18);
-  --amber:#ffb347;
-  --green:#39ff8a;
-  --red:#ff4d6d;
-  --text:#d4e8f5;
-  --text-dim:#6a8fa8;
-  --mono:'Share Tech Mono',monospace;
-  --sans:'Outfit',sans-serif;
-  --radius:14px;
-  --transition:0.38s cubic-bezier(.4,0,.2,1);
+  --bg:#050d18;--surface:#0a1628;--surface2:#0f1f38;--border:#1a3050;
+  --cyan:#00d4ff;--cyan-dim:#0098bb;--cyan-glow:rgba(0,212,255,.18);
+  --amber:#ffb347;--green:#39ff8a;--red:#ff4d6d;--purple:#c084fc;
+  --text:#d4e8f5;--text-dim:#6a8fa8;
+  --mono:'Share Tech Mono',monospace;--sans:'Outfit',sans-serif;--radius:14px;
 }
-
-/* ── Reset ───────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{
-  font-family:var(--sans);
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  overflow-x:hidden;
-}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px);}
 
-/* ── Scanline overlay ────────────────────────────────────── */
-body::before{
-  content:'';
-  position:fixed;inset:0;
-  background:repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,.06) 2px,
-    rgba(0,0,0,.06) 4px
-  );
-  pointer-events:none;
-  z-index:9999;
-}
-
-/* ── Noise grain ─────────────────────────────────────────── */
-body::after{
-  content:'';
-  position:fixed;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
-  pointer-events:none;
-  opacity:.5;
-  z-index:9998;
-}
-
-/* ── START SCREEN ────────────────────────────────────────── */
-#start{
-  position:fixed;inset:0;
-  background:var(--bg);
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  text-align:center;padding:32px;
-  z-index:1000;
-  transition:opacity .6s ease, transform .6s ease;
-}
+/* ── START ── */
+#start{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;z-index:1000;transition:opacity .6s ease,transform .6s ease;}
 #start.hiding{opacity:0;transform:scale(1.04);pointer-events:none;}
-
-.start-badge{
-  font-family:var(--mono);
-  font-size:.7rem;letter-spacing:.2em;
-  color:var(--cyan-dim);
-  text-transform:uppercase;
-  margin-bottom:24px;
-  display:flex;align-items:center;gap:10px;
-}
-.start-badge::before,.start-badge::after{
-  content:'';display:block;width:40px;height:1px;background:var(--cyan-dim);
-}
-
-.start-title{
-  font-size:clamp(2.4rem,7vw,4rem);
-  font-weight:700;
-  line-height:1.1;
-  letter-spacing:-.02em;
-  margin-bottom:10px;
-}
-.start-title span{
-  background:linear-gradient(135deg,var(--cyan) 0%,#7ef9ff 60%,var(--cyan-dim) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-
-.start-sub{
-  color:var(--text-dim);font-size:1rem;
-  margin-bottom:48px;max-width:380px;line-height:1.6;
-}
-
-.pulse-ring{
-  position:relative;display:inline-flex;
-  align-items:center;justify-content:center;
-  margin-bottom:48px;
-}
-.pulse-ring .icon{
-  width:90px;height:90px;
-  border:2px solid var(--cyan);
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  position:relative;z-index:1;
-  box-shadow:0 0 24px var(--cyan-glow),inset 0 0 24px var(--cyan-glow);
-}
+.start-badge{font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;color:var(--cyan-dim);text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+.start-badge::before,.start-badge::after{content:'';display:block;width:40px;height:1px;background:var(--cyan-dim);}
+.start-title{font-size:clamp(2.4rem,7vw,4rem);font-weight:700;line-height:1.1;letter-spacing:-.02em;margin-bottom:10px;}
+.start-title span{background:linear-gradient(135deg,var(--cyan) 0%,#7ef9ff 60%,var(--cyan-dim) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.start-sub{color:var(--text-dim);font-size:1rem;margin-bottom:48px;max-width:380px;line-height:1.6;}
+.pulse-ring{position:relative;display:inline-flex;align-items:center;justify-content:center;margin-bottom:48px;}
+.pulse-ring .icon{width:90px;height:90px;border:2px solid var(--cyan);border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;box-shadow:0 0 24px var(--cyan-glow),inset 0 0 24px var(--cyan-glow);}
 .pulse-ring .icon svg{width:40px;height:40px;stroke:var(--cyan);}
-@keyframes pulse-out{
-  0%{transform:scale(1);opacity:.6;}
-  100%{transform:scale(2.2);opacity:0;}
-}
-.pulse-ring::before,.pulse-ring::after{
-  content:'';position:absolute;
-  width:90px;height:90px;border-radius:50%;
-  border:1px solid var(--cyan);
-  animation:pulse-out 2.4s ease-out infinite;
-}
+@keyframes pulse-out{0%{transform:scale(1);opacity:.6;}100%{transform:scale(2.2);opacity:0;}}
+.pulse-ring::before,.pulse-ring::after{content:'';position:absolute;width:90px;height:90px;border-radius:50%;border:1px solid var(--cyan);animation:pulse-out 2.4s ease-out infinite;}
 .pulse-ring::after{animation-delay:1.2s;}
-
-/* ── ENTER BUTTON ────────────────────────────────────────── */
-.btn-primary{
-  background:transparent;
-  border:1.5px solid var(--cyan);
-  color:var(--cyan);
-  font-family:var(--mono);
-  font-size:.9rem;letter-spacing:.15em;
-  padding:14px 44px;
-  border-radius:4px;
-  cursor:pointer;
-  position:relative;overflow:hidden;
-  transition:color .3s,box-shadow .3s;
-}
-.btn-primary::before{
-  content:'';position:absolute;inset:0;
-  background:var(--cyan);
-  transform:translateX(-101%);
-  transition:transform .3s ease;
-}
+.btn-primary{background:transparent;border:1.5px solid var(--cyan);color:var(--cyan);font-family:var(--mono);font-size:.88rem;letter-spacing:.15em;padding:14px 44px;border-radius:4px;cursor:pointer;position:relative;overflow:hidden;transition:color .3s,box-shadow .3s;}
+.btn-primary::before{content:'';position:absolute;inset:0;background:var(--cyan);transform:translateX(-101%);transition:transform .3s ease;}
 .btn-primary:hover::before{transform:translateX(0);}
 .btn-primary:hover{color:var(--bg);box-shadow:0 0 30px var(--cyan-glow);}
 .btn-primary span{position:relative;z-index:1;}
 
-/* ── HEADER ──────────────────────────────────────────────── */
-header{
-  background:rgba(10,22,40,.92);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--border);
-  padding:0 20px;
-  height:56px;
-  display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:100;
-}
-.header-logo{
-  font-family:var(--mono);font-size:.85rem;
-  color:var(--cyan);letter-spacing:.08em;
-}
-.header-status{
-  font-family:var(--mono);font-size:.7rem;
-  color:var(--text-dim);letter-spacing:.1em;
-}
+/* ── HEADER ── */
+header{background:rgba(10,22,40,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.header-logo{font-family:var(--mono);font-size:.82rem;color:var(--cyan);letter-spacing:.08em;}
+.header-right{display:flex;align-items:center;gap:20px;}
+.header-status{font-family:var(--mono);font-size:.68rem;color:var(--text-dim);letter-spacing:.1em;}
+.instr-link{font-family:var(--mono);font-size:.62rem;color:var(--text-dim);letter-spacing:.1em;cursor:pointer;opacity:.4;transition:opacity .2s,color .2s;}
+.instr-link:hover{opacity:1;color:var(--amber);}
 
-/* ── PROGRESS BAR ────────────────────────────────────────── */
-.progress-track{
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
-  padding:20px 20px 0;
-}
-.progress-label{
-  font-family:var(--mono);font-size:.65rem;
-  letter-spacing:.15em;color:var(--text-dim);
-  text-transform:uppercase;margin-bottom:14px;
-}
-.progress-steps{
-  display:flex;align-items:center;gap:0;
-  max-width:560px;margin:0 auto 20px;
-}
-.step-node{
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  flex:0 0 auto;
-}
-.step-dot{
-  width:32px;height:32px;border-radius:50%;
-  border:2px solid var(--border);
-  background:var(--surface2);
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-size:.75rem;
-  color:var(--text-dim);
-  transition:all .4s ease;
-  position:relative;
-}
-.step-dot.active{
-  border-color:var(--cyan);color:var(--cyan);
-  box-shadow:0 0 16px var(--cyan-glow);
-}
-.step-dot.done{
-  border-color:var(--green);background:var(--green);color:var(--bg);
-  box-shadow:0 0 16px rgba(57,255,138,.3);
-}
-.step-dot.done::after{
-  content:'✓';position:absolute;font-size:.8rem;
-}
-.step-label{
-  font-size:.6rem;font-family:var(--mono);
-  letter-spacing:.08em;color:var(--text-dim);
-  text-align:center;
-  transition:color .4s;
-}
+/* ── PROGRESS ── */
+.progress-track{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px 0;}
+.progress-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.15em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;text-align:center;}
+.progress-steps{display:flex;align-items:center;max-width:640px;margin:0 auto 16px;}
+.step-node{display:flex;flex-direction:column;align-items:center;gap:5px;flex:0 0 auto;}
+.step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.68rem;color:var(--text-dim);transition:all .4s ease;position:relative;}
+.step-dot.active{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 14px var(--cyan-glow);}
+.step-dot.done{border-color:var(--green);background:var(--green);color:var(--bg);box-shadow:0 0 14px rgba(57,255,138,.3);}
+.step-dot.done::after{content:'✓';position:absolute;font-size:.7rem;}
+.step-dot.done>span{display:none;}
+.step-label{font-size:.52rem;font-family:var(--mono);letter-spacing:.05em;color:var(--text-dim);text-align:center;transition:color .4s;white-space:nowrap;}
 .step-label.active{color:var(--cyan);}
 .step-label.done{color:var(--green);}
-.step-line{
-  flex:1;height:2px;
-  background:var(--border);
-  position:relative;overflow:hidden;
-  margin-bottom:20px;
-}
-.step-line-fill{
-  position:absolute;left:0;top:0;bottom:0;width:0%;
-  background:linear-gradient(90deg,var(--green),var(--cyan));
-  transition:width .6s ease .1s;
-}
+.step-line{flex:1;height:2px;background:var(--border);position:relative;overflow:hidden;margin-bottom:18px;min-width:16px;}
+.step-line-fill{position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg,var(--green),var(--cyan));transition:width .6s ease .1s;}
 .step-line-fill.full{width:100%;}
 
-/* ── MAIN CONTAINER ──────────────────────────────────────── */
-.container{max-width:680px;margin:0 auto;padding:24px 16px 80px;}
+/* ── LAYOUT ── */
+.container{max-width:680px;margin:0 auto;padding:20px 16px 80px;}
 
-/* ── CARD ────────────────────────────────────────────────── */
-.card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:24px;
-  margin:20px 0;
-  position:relative;
-  overflow:hidden;
-}
-.card::before{
-  content:'';position:absolute;
-  top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--cyan-dim),transparent);
-  opacity:.4;
-}
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin:16px 0;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan-dim),transparent);opacity:.4;}
 
-/* ── ANIMATIONS ──────────────────────────────────────────── */
-.hidden{display:none!important;}
-
-@keyframes slideUp{
-  from{opacity:0;transform:translateY(28px);}
-  to{opacity:1;transform:translateY(0);}
-}
-.animate-in{animation:slideUp .45s ease forwards;}
-
-@keyframes shake{
-  0%,100%{transform:translateX(0);}
-  20%{transform:translateX(-8px);}
-  40%{transform:translateX(8px);}
-  60%{transform:translateX(-5px);}
-  80%{transform:translateX(5px);}
-}
-.shake{animation:shake .4s ease;}
-
-@keyframes unlockPop{
-  0%{transform:scale(1);}
-  50%{transform:scale(1.06);}
-  100%{transform:scale(1);}
-}
-.unlock-pop{animation:unlockPop .35s ease;}
-
-/* ── GATE SCREEN ─────────────────────────────────────────── */
-.gate-header{
-  display:flex;align-items:center;gap:14px;margin-bottom:20px;
-}
-.lock-icon{
-  width:44px;height:44px;border-radius:10px;
-  background:var(--surface2);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-  transition:all .4s ease;
-}
-.lock-icon svg{width:20px;height:20px;stroke:var(--text-dim);transition:stroke .4s;}
-.lock-icon.unlocked{border-color:var(--green);background:rgba(57,255,138,.08);}
-.lock-icon.unlocked svg{stroke:var(--green);}
-
-.gate-title{font-size:1.1rem;font-weight:600;}
-.gate-sub{font-size:.8rem;color:var(--text-dim);margin-top:3px;font-family:var(--mono);}
-
-.code-input-wrap{position:relative;margin:16px 0;}
-.code-input{
-  width:100%;padding:14px 16px;
-  background:var(--surface2);
-  border:1.5px solid var(--border);
-  border-radius:10px;
-  color:var(--cyan);
-  font-family:var(--mono);
-  font-size:1.1rem;letter-spacing:.25em;text-transform:uppercase;
-  outline:none;
-  transition:border-color .3s,box-shadow .3s;
-  text-align:center;
-}
-.code-input::placeholder{color:var(--text-dim);letter-spacing:.1em;font-size:.8rem;}
-.code-input:focus{
-  border-color:var(--cyan);
-  box-shadow:0 0 0 3px var(--cyan-glow);
-}
+/* ── SCENARIO ── */
+.case-badge{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;color:var(--cyan);background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);padding:3px 10px;border-radius:4px;display:inline-block;margin-bottom:10px;}
+.case-title{font-size:1.15rem;font-weight:700;margin-bottom:14px;}
+.vignette{background:var(--surface2);border-left:3px solid var(--cyan-dim);border-radius:0 8px 8px 0;padding:13px 15px;font-size:.88rem;line-height:1.65;color:var(--text-dim);margin-bottom:16px;}
+.views-block{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:18px;}
+.views-title{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;}
+.view-item{display:flex;align-items:center;gap:10px;font-size:.88rem;padding:6px 0;border-bottom:1px solid var(--border);}
+.view-item:last-child{border-bottom:none;}
+.view-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan);flex-shrink:0;}
+.divider{border:none;border-top:1px solid var(--border);margin:18px 0;}
+.input-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+.code-input{width:100%;padding:13px 16px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--cyan);font-family:var(--mono);font-size:1.1rem;letter-spacing:.25em;text-transform:uppercase;outline:none;text-align:center;transition:border-color .3s,box-shadow .3s;}
+.code-input::placeholder{color:var(--text-dim);letter-spacing:.08em;font-size:.78rem;}
+.code-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px var(--cyan-glow);}
 .code-input.error{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,77,109,.15);}
 .code-input.success{border-color:var(--green);box-shadow:0 0 0 3px rgba(57,255,138,.15);}
-
-.msg{
-  font-family:var(--mono);font-size:.75rem;
-  letter-spacing:.08em;margin-top:8px;text-align:center;
-  min-height:20px;transition:all .3s;
-}
+.msg{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-align:center;min-height:18px;margin-top:6px;transition:all .3s;}
 .msg.error{color:var(--red);}
 .msg.success{color:var(--green);}
-
-/* ── CASE CARD ───────────────────────────────────────────── */
-.case-label{
-  display:flex;align-items:center;gap:10px;margin-bottom:18px;
-}
-.case-num{
-  font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;
-  color:var(--cyan);text-transform:uppercase;
-  background:rgba(0,212,255,.08);
-  border:1px solid rgba(0,212,255,.25);
-  padding:4px 10px;border-radius:4px;
-}
-.case-title{font-size:1.2rem;font-weight:700;}
-.vignette{
-  background:var(--surface2);
-  border-left:3px solid var(--cyan-dim);
-  border-radius:0 8px 8px 0;
-  padding:14px 16px;
-  font-size:.9rem;line-height:1.65;
-  color:var(--text-dim);
-  margin-bottom:20px;
-}
-
-/* ── VIDEO GRID ──────────────────────────────────────────── */
-.video-grid{display:grid;gap:12px;margin-bottom:20px;}
-.video-wrap{position:relative;}
-.video-label{
-  font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;
-  color:var(--text-dim);text-transform:uppercase;
-  margin-bottom:6px;display:flex;align-items:center;gap:8px;
-}
-.video-label::before{
-  content:'';width:6px;height:6px;border-radius:50%;
-  background:var(--cyan);box-shadow:0 0 6px var(--cyan);
-  flex-shrink:0;
-}
-video{
-  width:100%;border-radius:10px;
-  border:1px solid var(--border);
-  background:#000;display:block;
-}
-
-/* ── FINDINGS ────────────────────────────────────────────── */
-.findings-title{
-  font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--text-dim);
-  margin-bottom:12px;
-}
-.findings{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
-.finding-item{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 14px;
-  background:var(--surface2);
-  border:1.5px solid var(--border);
-  border-radius:10px;
-  cursor:pointer;
-  transition:border-color .25s,background .25s,box-shadow .25s;
-  user-select:none;
-}
-.finding-item:hover{border-color:var(--cyan-dim);background:rgba(0,212,255,.04);}
-.finding-item input[type=checkbox]{display:none;}
-.check-box{
-  width:20px;height:20px;border-radius:5px;
-  border:1.5px solid var(--border);
-  background:var(--surface);
-  flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .25s;
-}
-.check-box svg{width:12px;height:12px;stroke:var(--bg);opacity:0;transition:opacity .2s;}
-.finding-item.checked{border-color:var(--cyan);background:rgba(0,212,255,.07);}
-.finding-item.checked .check-box{background:var(--cyan);border-color:var(--cyan);}
-.finding-item.checked .check-box svg{opacity:1;}
-.finding-text{font-size:.9rem;}
-
-/* ── SUBMIT BUTTON ───────────────────────────────────────── */
-.btn-submit{
-  width:100%;padding:15px;
-  background:linear-gradient(135deg,#006d8f,var(--cyan-dim));
-  border:none;border-radius:10px;
-  color:#fff;font-family:var(--mono);
-  font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;
-  cursor:pointer;
-  position:relative;overflow:hidden;
-  transition:opacity .3s,box-shadow .3s;
-  box-shadow:0 4px 20px rgba(0,212,255,.15);
-}
-.btn-submit::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.08),transparent);
-}
-.btn-submit:hover{opacity:.9;box-shadow:0 4px 30px rgba(0,212,255,.3);}
+.btn-submit{width:100%;padding:14px;margin-top:12px;background:linear-gradient(135deg,#006d8f,var(--cyan-dim));border:none;border-radius:10px;color:#fff;font-family:var(--mono);font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;position:relative;overflow:hidden;transition:opacity .3s,box-shadow .3s;box-shadow:0 4px 20px rgba(0,212,255,.12);}
+.btn-submit::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent);}
+.btn-submit:hover{opacity:.9;box-shadow:0 4px 28px rgba(0,212,255,.28);}
 .btn-submit:active{transform:scale(.99);}
 
-/* ── SUBMIT FEEDBACK ─────────────────────────────────────── */
-.submit-msg{
-  font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;
-  text-align:center;padding:10px;border-radius:8px;
-  margin-top:10px;min-height:0;
-  opacity:0;transition:opacity .3s;
-}
+/* ── VIDEOS ── */
+.video-grid{display:grid;gap:12px;margin-bottom:18px;}
+.vid-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.vid-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan);flex-shrink:0;}
+video{width:100%;border-radius:10px;border:1px solid var(--border);background:#000;display:block;}
+
+/* ── FINDINGS ── */
+.findings-title{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;}
+.findings-list{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
+.finding-item{display:flex;align-items:center;gap:11px;padding:11px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .22s,background .22s;user-select:none;}
+.finding-item:hover{border-color:var(--cyan-dim);background:rgba(0,212,255,.04);}
+.finding-item.checked{border-color:var(--cyan);background:rgba(0,212,255,.07);}
+.finding-num{font-family:var(--mono);font-size:.8rem;color:var(--cyan-dim);width:16px;text-align:center;flex-shrink:0;font-weight:bold;}
+.finding-item.checked .finding-num{color:var(--cyan);}
+.check-box{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--border);background:var(--surface);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .22s;}
+.check-box svg{width:12px;height:12px;stroke:var(--bg);opacity:0;transition:opacity .2s;}
+.finding-item.checked .check-box{background:var(--cyan);border-color:var(--cyan);}
+.finding-item.checked .check-box svg{opacity:1;}
+.finding-text{font-size:.88rem;}
+.submit-msg{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-align:center;padding:10px;border-radius:8px;margin-top:10px;opacity:0;transition:opacity .3s;}
 .submit-msg.visible{opacity:1;}
 .submit-msg.error{color:var(--red);background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);}
 .submit-msg.success{color:var(--green);background:rgba(57,255,138,.07);border:1px solid rgba(57,255,138,.2);}
 
-/* ── COMPLETION SCREEN ───────────────────────────────────── */
-#done{text-align:center;}
-.done-glow{
-  width:110px;height:110px;
-  margin:0 auto 28px;
-  border-radius:50%;
-  background:radial-gradient(circle,rgba(57,255,138,.25) 0%,transparent 70%);
-  border:2px solid var(--green);
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 50px rgba(57,255,138,.2);
-  animation:completePulse 3s ease-in-out infinite;
-}
-@keyframes completePulse{
-  0%,100%{box-shadow:0 0 50px rgba(57,255,138,.2);}
-  50%{box-shadow:0 0 80px rgba(57,255,138,.4);}
-}
+/* ── BLOOD FLOW ── */
+.bf-box{background:rgba(255,179,71,.04);border:1px solid rgba(255,179,71,.2);border-radius:12px;padding:18px;margin-top:4px;}
+.bf-title{font-family:var(--mono);font-size:.65rem;letter-spacing:.16em;color:var(--amber);text-transform:uppercase;margin-bottom:10px;}
+.bf-instructions{font-size:.86rem;color:var(--text-dim);line-height:1.65;margin-bottom:14px;}
+.bf-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px;}
+.bf-chip{font-family:var(--mono);font-size:.7rem;padding:5px 10px;border-radius:6px;border:1px solid rgba(255,179,71,.3);color:var(--amber);background:rgba(255,179,71,.07);}
+
+/* ── CLINICAL INTEGRATION QUIZ ── */
+.quiz-box{background:rgba(192,132,252,.04);border:1px solid rgba(192,132,252,.2);border-radius:12px;padding:20px;margin-top:4px;}
+.quiz-title{font-family:var(--mono);font-size:.65rem;letter-spacing:.16em;color:var(--purple);text-transform:uppercase;margin-bottom:18px;}
+.quiz-q-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;}
+.quiz-q-text{font-size:.94rem;font-weight:600;color:var(--text);margin-bottom:12px;line-height:1.4;}
+.quiz-options{display:flex;flex-direction:column;gap:7px;margin-bottom:20px;}
+.quiz-opt{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .22s,background .22s;user-select:none;}
+.quiz-opt:hover{border-color:var(--purple);background:rgba(192,132,252,.04);}
+.quiz-opt.selected{border-color:var(--purple);background:rgba(192,132,252,.07);}
+.quiz-opt.correct-ans{border-color:var(--green);background:rgba(57,255,138,.07);pointer-events:none;}
+.quiz-opt.wrong-ans{border-color:var(--red);background:rgba(255,77,109,.07);}
+.quiz-letter{font-family:var(--mono);font-size:.75rem;font-weight:bold;width:24px;height:24px;border-radius:5px;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-dim);flex-shrink:0;transition:all .22s;margin-top:1px;}
+.quiz-opt.selected .quiz-letter{background:var(--purple);border-color:var(--purple);color:#fff;}
+.quiz-opt.correct-ans .quiz-letter{background:var(--green);border-color:var(--green);color:var(--bg);}
+.quiz-opt.wrong-ans .quiz-letter{background:var(--red);border-color:var(--red);color:#fff;}
+.quiz-opt-text{font-size:.88rem;line-height:1.5;padding-top:2px;}
+.quiz-submit-msg{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-align:center;padding:10px;border-radius:8px;margin-top:10px;opacity:0;transition:opacity .3s;}
+.quiz-submit-msg.visible{opacity:1;}
+.quiz-submit-msg.error{color:var(--red);background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);}
+.quiz-submit-msg.success{color:var(--green);background:rgba(57,255,138,.07);border:1px solid rgba(57,255,138,.2);}
+.btn-quiz{width:100%;padding:14px;margin-top:4px;background:linear-gradient(135deg,#4a1a7a,#7c3aed);border:none;border-radius:10px;color:#fff;font-family:var(--mono);font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;position:relative;overflow:hidden;transition:opacity .3s,box-shadow .3s;box-shadow:0 4px 20px rgba(192,132,252,.15);}
+.btn-quiz::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent);}
+.btn-quiz:hover{opacity:.9;box-shadow:0 4px 28px rgba(192,132,252,.3);}
+.btn-quiz:active{transform:scale(.99);}
+
+/* ── ANIMATIONS ── */
+.hidden{display:none!important;}
+@keyframes slideUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+.animate-in{animation:slideUp .4s ease forwards;}
+@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}
+.shake{animation:shake .38s ease;}
+
+/* ── COMPLETION ── */
+.done-wrap{text-align:center;}
+.done-glow{width:110px;height:110px;margin:0 auto 24px;border-radius:50%;background:radial-gradient(circle,rgba(57,255,138,.22) 0%,transparent 70%);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px rgba(57,255,138,.18);animation:cPulse 3s ease-in-out infinite;}
+@keyframes cPulse{0%,100%{box-shadow:0 0 50px rgba(57,255,138,.18);}50%{box-shadow:0 0 80px rgba(57,255,138,.38);}}
 .done-glow svg{width:48px;height:48px;stroke:var(--green);}
-
 .done-title{font-size:2rem;font-weight:700;margin-bottom:10px;}
-.done-title span{
-  background:linear-gradient(135deg,var(--green),var(--cyan));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.done-sub{color:var(--text-dim);font-size:.95rem;line-height:1.6;margin-bottom:36px;max-width:420px;margin-left:auto;margin-right:auto;}
-
-.debrief-grid{display:flex;flex-direction:column;gap:14px;text-align:left;}
-.debrief-card{
-  background:var(--surface2);
-  border:1px solid var(--border);
-  border-radius:12px;padding:18px;
-  position:relative;overflow:hidden;
-}
-.debrief-card::before{
-  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
-}
-.debrief-card.t1::before{background:var(--cyan);}
-.debrief-card.t2::before{background:var(--amber);}
-.debrief-card.t3::before{background:var(--red);}
-
-.debrief-case{
-  font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;
-}
-.debrief-dx{font-size:1rem;font-weight:600;margin-bottom:10px;}
-.debrief-findings{
-  display:flex;flex-wrap:wrap;gap:6px;
-}
-.debrief-finding{
-  font-family:var(--mono);font-size:.65rem;letter-spacing:.06em;
-  padding:4px 10px;border-radius:4px;
-  border:1px solid var(--border);color:var(--text-dim);
-}
-.debrief-card.t1 .debrief-finding{border-color:rgba(0,212,255,.3);color:var(--cyan-dim);}
-.debrief-card.t2 .debrief-finding{border-color:rgba(255,179,71,.3);color:var(--amber);}
-.debrief-card.t3 .debrief-finding{border-color:rgba(255,77,109,.3);color:var(--red);}
-
-.restart-btn{
-  margin-top:32px;
-  background:transparent;
-  border:1.5px solid var(--border);
-  color:var(--text-dim);
-  font-family:var(--mono);font-size:.75rem;letter-spacing:.15em;
-  padding:12px 28px;border-radius:6px;cursor:pointer;
-  transition:border-color .3s,color .3s;
-}
+.done-title span{background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.done-sub{color:var(--text-dim);font-size:.92rem;line-height:1.6;margin-bottom:32px;max-width:420px;margin-left:auto;margin-right:auto;}
+.debrief-grid{display:flex;flex-direction:column;gap:11px;text-align:left;margin-bottom:28px;}
+.debrief-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;position:relative;overflow:hidden;}
+.debrief-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;}
+.dc1::before{background:var(--cyan);}
+.dc2::before{background:var(--amber);}
+.dc3::before{background:var(--red);}
+.dc4::before{background:var(--green);}
+.dc-label{font-family:var(--mono);font-size:.57rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px;}
+.dc-dx{font-size:.97rem;font-weight:600;margin-bottom:9px;}
+.dc-findings{display:flex;flex-wrap:wrap;gap:6px;}
+.dc-finding{font-family:var(--mono);font-size:.62rem;padding:3px 9px;border-radius:4px;border:1px solid var(--border);color:var(--text-dim);}
+.restart-btn{background:transparent;border:1.5px solid var(--border);color:var(--text-dim);font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;padding:11px 28px;border-radius:6px;cursor:pointer;transition:border-color .3s,color .3s;}
 .restart-btn:hover{border-color:var(--cyan);color:var(--cyan);}
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
-@media(max-width:480px){
-  .card{padding:18px;}
-  .start-title{font-size:2.2rem;}
-}
+/* ── INSTRUCTOR ── */
+#instr-overlay{position:fixed;inset:0;background:#020912;z-index:2000;overflow-y:auto;}
+.instr-hdr{background:rgba(2,9,18,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;}
+.instr-hdr-title{font-family:var(--mono);font-size:.82rem;color:var(--amber);letter-spacing:.1em;}
+.instr-close-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;padding:7px 14px;border-radius:6px;cursor:pointer;transition:border-color .2s,color .2s;}
+.instr-close-btn:hover{border-color:var(--red);color:var(--red);}
+.instr-body{max-width:800px;margin:0 auto;padding:32px 24px 60px;}
+.pw-gate{text-align:center;padding:80px 20px;}
+.pw-gate-title{font-family:var(--mono);font-size:.95rem;letter-spacing:.12em;color:var(--amber);margin-bottom:28px;}
+.pw-input{max-width:280px;width:100%;padding:13px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:.9rem;letter-spacing:.1em;outline:none;text-align:center;display:block;margin:0 auto 10px;transition:border-color .3s;}
+.pw-input:focus{border-color:var(--amber);}
+.pw-input.error{border-color:var(--red);}
+.pw-msg{font-family:var(--mono);font-size:.7rem;color:var(--red);min-height:18px;text-align:center;margin-bottom:14px;}
+.btn-amber{background:transparent;border:1.5px solid var(--amber);color:var(--amber);font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;padding:12px 32px;border-radius:6px;cursor:pointer;position:relative;overflow:hidden;transition:color .3s;}
+.btn-amber::before{content:'';position:absolute;inset:0;background:var(--amber);transform:translateX(-101%);transition:transform .3s ease;}
+.btn-amber:hover::before{transform:translateX(0);}
+.btn-amber:hover{color:var(--bg);}
+.btn-amber span{position:relative;z-index:1;}
+.isec{margin-bottom:38px;}
+.isec-title{font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;color:var(--amber);text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:16px;}
+.itbl{width:100%;border-collapse:collapse;font-size:.84rem;}
+.itbl th{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);padding:8px 12px;border-bottom:2px solid var(--border);text-align:left;}
+.itbl td{padding:10px 12px;border-bottom:1px solid rgba(26,48,80,.45);vertical-align:middle;}
+.itbl tr:last-child td{border-bottom:none;}
+.cpill{font-family:var(--mono);font-size:.8rem;padding:3px 10px;border-radius:4px;display:inline-block;}
+.cpill-c{color:var(--cyan);background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.22);}
+.cpill-a{color:var(--amber);background:rgba(255,179,71,.08);border:1px solid rgba(255,179,71,.22);}
+.cpill-g{color:var(--green);background:rgba(57,255,138,.07);border:1px solid rgba(57,255,138,.2);}
+.cpill-p{color:var(--purple);background:rgba(192,132,252,.07);border:1px solid rgba(192,132,252,.22);}
+.istep{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid rgba(26,48,80,.35);}
+.istep:last-child{border-bottom:none;}
+.istep-n{font-family:var(--mono);font-size:.68rem;color:var(--cyan);background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.22);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.istep-t{font-size:.86rem;line-height:1.55;color:var(--text-dim);padding-top:4px;}
+.istep-t strong{color:var(--text);}
+.ibf-row{margin-bottom:16px;}
+.ibf-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;color:var(--text-dim);margin-bottom:6px;}
+.ibf-chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+.ibf-node{font-family:var(--mono);font-size:.7rem;padding:5px 10px;border-radius:6px;border:1px solid rgba(0,212,255,.28);color:var(--cyan-dim);background:rgba(0,212,255,.05);}
+.ibf-arr{color:var(--text-dim);font-size:.78rem;}
+.iwarning{background:rgba(255,179,71,.06);border:1px solid rgba(255,179,71,.2);border-radius:8px;padding:12px 16px;font-size:.8rem;color:var(--amber);font-family:var(--mono);letter-spacing:.03em;line-height:1.6;}
+.iinfo{background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.18);border-radius:8px;padding:12px 16px;font-size:.8rem;color:var(--cyan-dim);font-family:var(--mono);letter-spacing:.03em;line-height:1.6;margin-bottom:14px;}
+.mapping-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px;}
+.mapping-cell{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;text-align:center;}
+.mapping-num{font-family:var(--mono);font-size:.75rem;color:var(--cyan);margin-bottom:3px;}
+.mapping-correct{border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.06);}
+.mapping-correct .mapping-num{color:var(--cyan);}
+.mapping-correct .mapping-text{color:var(--text);}
+
+@keyframes csEnter{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
+.case-section{transition:opacity .35s ease,transform .35s ease;}
+.case-section.cs-exit{opacity:0;transform:translateX(-40px);pointer-events:none;}
+.case-section.cs-enter{animation:csEnter .45s ease forwards;}
+@media(max-width:480px){.card{padding:16px;}.step-label{font-size:.45rem;}.mapping-grid{grid-template-columns:repeat(2,1fr);}}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════
-     START SCREEN
-═══════════════════════════════════════════════════════ -->
+<!-- START -->
 <div id="start">
-  <div class="start-badge"><span>POCUS Simulation Lab</span></div>
-
+  <div class="start-badge"><span>JMP POCUS Simulation Lab</span></div>
   <div class="pulse-ring">
     <div class="icon">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -518,451 +246,1039 @@ video{
       </svg>
     </div>
   </div>
-
   <h1 class="start-title"><span>Cardiac Escape</span></h1>
-  <p class="start-sub">Three cases. Three diagnoses waiting to be inferred. Interpret what you see — no labels, no shortcuts.</p>
-
+  <p class="start-sub">Four cases. Four diagnoses waiting to be inferred. Interpret what you see — no labels, no shortcuts.</p>
   <button class="btn-primary" onclick="startApp()"><span>INITIATE SEQUENCE</span></button>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     HEADER
-═══════════════════════════════════════════════════════ -->
+<!-- HEADER -->
 <header id="app-header" class="hidden">
   <div class="header-logo">POCUS // ESCAPE ROOM</div>
-  <div class="header-status" id="header-status">CASE 1 OF 3</div>
+  <div class="header-right">
+    <span class="instr-link" onclick="openInstructor()">⚙ INSTRUCTOR</span>
+    <span class="header-status" id="header-status">CASE 1 OF 4</span>
+  </div>
 </header>
 
-<!-- ═══════════════════════════════════════════════════════
-     PROGRESS
-═══════════════════════════════════════════════════════ -->
+<!-- PROGRESS -->
 <div class="progress-track hidden" id="progress-track">
   <div class="container" style="padding:0 16px;">
     <div class="progress-label">MISSION PROGRESS</div>
-    <div class="progress-steps">
-      <div class="step-node">
-        <div class="step-dot active" id="dot1">1</div>
-        <div class="step-label active" id="lbl1">TAMPONADE</div>
-      </div>
-      <div class="step-line"><div class="step-line-fill" id="line1"></div></div>
-      <div class="step-node">
-        <div class="step-dot" id="dot2">2</div>
-        <div class="step-label" id="lbl2">VOLUME OVL</div>
-      </div>
-      <div class="step-line"><div class="step-line-fill" id="line2"></div></div>
-      <div class="step-node">
-        <div class="step-dot" id="dot3">3</div>
-        <div class="step-label" id="lbl3">RV FAILURE</div>
-      </div>
-    </div>
+    <div class="progress-steps" id="progress-steps"></div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     MAIN
-═══════════════════════════════════════════════════════ -->
-<div class="container" id="main-container" style="display:none;">
+<!-- MAIN -->
+<div class="container hidden" id="main-container"></div>
 
-  <!-- GATE 1 -->
-  <div class="card hidden" id="gate1">
-    <div class="gate-header">
-      <div class="lock-icon" id="lock1">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
-      </div>
-      <div>
-        <div class="gate-title">Case 1 Access</div>
-        <div class="gate-sub">// ENTER ACCESS CODE</div>
-      </div>
-    </div>
-    <div class="code-input-wrap">
-      <input class="code-input" id="c1code" placeholder="· · · ·" maxlength="4"
-             onkeydown="if(event.key==='Enter')unlock('c1code','KQTR','case1','m1','lock1')"/>
-    </div>
-    <div class="msg" id="m1"></div>
-    <button class="btn-submit" onclick="unlock('c1code','KQTR','case1','m1','lock1')">
-      SUBMIT CODE
-    </button>
+<!-- INSTRUCTOR OVERLAY -->
+<div id="instr-overlay" class="hidden">
+  <div class="instr-hdr">
+    <div class="instr-hdr-title">⚕ INSTRUCTOR GUIDE</div>
+    <button class="instr-close-btn" onclick="closeInstructor()">✕ CLOSE</button>
   </div>
-
-  <!-- CASE 1 -->
-  <div class="card hidden" id="case1">
-    <div class="case-label">
-      <span class="case-num">CASE 01</span>
+  <div class="instr-body">
+    <div id="pw-gate" class="pw-gate">
+      <div class="pw-gate-title">// INSTRUCTOR ACCESS REQUIRED</div>
+      <input class="pw-input" id="pw-input" type="password" placeholder="Enter password"
+             onkeydown="if(event.key==='Enter')checkPw()"/>
+      <div class="pw-msg" id="pw-msg"></div>
+      <button class="btn-amber" onclick="checkPw()"><span>AUTHENTICATE</span></button>
     </div>
-    <div class="case-title">Undifferentiated Shock</div>
-    <div class="vignette">
-      68-year-old male presenting with 3 hours of progressive dyspnea, hypotension (BP 82/54), and muffled heart sounds. Tachycardic, diaphoretic. History of recently treated lung adenocarcinoma.
-    </div>
-
-    <div class="video-grid">
-      <div class="video-wrap">
-        <div class="video-label">Cardiac Window</div>
-        <video controls src="videos/case1_cardiac.mp4"></video>
-      </div>
-      <div class="video-wrap">
-        <div class="video-label">Lung Fields</div>
-        <video controls src="videos/case1_lung.mp4"></video>
-      </div>
-      <div class="video-wrap">
-        <div class="video-label">IVC Assessment</div>
-        <video controls src="videos/case1_ivc.mp4"></video>
-      </div>
-    </div>
-
-    <div class="findings-title">// SELECT ALL FINDINGS</div>
-    <div class="findings" id="findings-case1">
-      <label class="finding-item" onclick="toggleCheck(this)">
-        <input type="checkbox" value="eff">
-        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
-        <span class="finding-text">Pericardial effusion</span>
-      </label>
-      <label class="finding-item" onclick="toggleCheck(this)">
-        <input type="checkbox" value="rvcol">
-        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
-        <span class="finding-text">RV diastolic collapse</span>
-      </label>
-      <label class="finding-item" onclick="toggleCheck(this)">
-        <input type="checkbox" value="ivc">
-        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
-        <span class="finding-text">Plethoric IVC</span>
-      </label>
-    </div>
-
-    <button class="btn-submit" onclick="submitCase('case1',['rvcol','eff','ivc'],'gate2','sm1')">
-      SUBMIT FINDINGS
-    </button>
-    <div class="submit-msg" id="sm1"></div>
+    <div id="instr-content" class="hidden"></div>
   </div>
-
-  <!-- GATE 2 -->
-  <div class="card hidden" id="gate2">
-    <div class="gate-header">
-      <div class="lock-icon" id="lock2">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
-      </div>
-      <div>
-        <div class="gate-title">Case 2 Access</div>
-        <div class="gate-sub">// ENTER ACCESS CODE</div>
-      </div>
-    </div>
-    <div class="code-input-wrap">
-      <input class="code-input" id="c2code" placeholder="· · · ·" maxlength="4"
-             onkeydown="if(event.key==='Enter')unlock('c2code','VJXM','case2','m2','lock2')"/>
-    </div>
-    <div class="msg" id="m2"></div>
-    <button class="btn-submit" onclick="unlock('c2code','VJXM','case2','m2','lock2')">
-      SUBMIT CODE
-    </button>
-  </div>
-
-  <!-- CASE 2 -->
-  <div class="card hidden" id="case2">
-    <div class="case-label">
-      <span class="case-num">CASE 02</span>
-    </div>
-    <div class="case-title">Dyspnea &amp; Lower Extremity Edema</div>
-    <div class="vignette">
-      54-year-old female with known cardiomyopathy presents with 5-day history of worsening exertional dyspnea, 2-pillow orthopnea, and bilateral pitting edema to the knees. Crackles bilaterally at bases. Denies recent medication compliance.
-    </div>
-
-    <div class="video-grid">
-      <div class="video-wrap">
-        <div class="video-label">Cardiac Window</div>
-        <video controls src="videos/case2_cardiac.mp4"></video>
-      </div>
-      <div class="video-wrap">
-        <div class="video-label">Lung Fields</div>
-        <video controls src="videos/case2_lung.mp4"></video>
-      </div>
-      <div class="video-wrap">
-        <div class="video-label">IVC Assessment</div>
-        <video controls src="videos/case2_ivc.mp4"></video>
-      </div>
-    </div>
-
-    <div class="findings-title">// SELECT ALL FINDINGS</div>
-    <div class="findings" id="findings-case2">
-      <label class="finding-item" onclick="toggleCheck(this)">
-        <input type="checkbox" value="lv">
-        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
-        <span class="finding-text">Reduced LV systolic function</span>
-      </label>
-      <label class="finding-item" onclick="toggleCheck(this)">
-        <input type="checkbox" value="bl">
-        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
-        <span class="finding-text">Diffuse B-lines</span>
-      </label>
-      <label class="finding-item" onclick="toggleCheck(this)">
-        <input type="checkbox" value="ivc">
-        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
-        <span class="finding-text">Plethoric IVC</span>
-      </label>
-    </div>
-
-    <button class="btn-submit" onclick="submitCase('case2',['lv','bl','ivc'],'gate3','sm2')">
-      SUBMIT FINDINGS
-    </button>
-    <div class="submit-msg" id="sm2"></div>
-  </div>
-
-  <!-- GATE 3 -->
-  <div class="card hidden" id="gate3">
-    <div class="gate-header">
-      <div class="lock-icon" id="lock3">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
-      </div>
-      <div>
-        <div class="gate-title">Case 3 Access</div>
-        <div class="gate-sub">// ENTER ACCESS CODE</div>
-      </div>
-    </div>
-    <div class="code-input-wrap">
-      <input class="code-input" id="c3code" placeholder="· · · ·" maxlength="4"
-             onkeydown="if(event.key==='Enter')unlock('c3code','LPNC','case3','m3','lock3')"/>
-    </div>
-    <div class="msg" id="m3"></div>
-    <button class="btn-submit" onclick="unlock('c3code','LPNC','case3','m3','lock3')">
-      SUBMIT CODE
-    </button>
-  </div>
-
-  <!-- CASE 3 -->
-  <div class="card hidden" id="case3">
-    <div class="case-label">
-      <span class="case-num">CASE 03</span>
-    </div>
-    <div class="case-title">Cardiopulmonary Collapse</div>
-    <div class="vignette">
-      42-year-old male with untreated obstructive sleep apnea presents with acute onset dyspnea, syncope, and pleuritic chest pain. O₂ saturation 84% on room air. JVD present, no peripheral edema, lungs clear to auscultation.
-    </div>
-
-    <div class="video-grid">
-      <div class="video-wrap">
-        <div class="video-label">Cardiac Window</div>
-        <video controls src="videos/case3_cardiac.mp4"></video>
-      </div>
-      <div class="video-wrap">
-        <div class="video-label">Lung Fields</div>
-        <video controls src="videos/case3_lung.mp4"></video>
-      </div>
-      <div class="video-wrap">
-        <div class="video-label">IVC Assessment</div>
-        <video controls src="videos/case3_ivc.mp4"></video>
-      </div>
-    </div>
-
-    <div class="findings-title">// SELECT ALL FINDINGS</div>
-    <div class="findings" id="findings-case3">
-      <label class="finding-item" onclick="toggleCheck(this)">
-        <input type="checkbox" value="rv">
-        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
-        <span class="finding-text">RV dilation</span>
-      </label>
-      <label class="finding-item" onclick="toggleCheck(this)">
-        <input type="checkbox" value="sept">
-        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
-        <span class="finding-text">Septal flattening (D-sign)</span>
-      </label>
-      <label class="finding-item" onclick="toggleCheck(this)">
-        <input type="checkbox" value="ivc">
-        <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></div>
-        <span class="finding-text">Plethoric IVC</span>
-      </label>
-    </div>
-
-    <button class="btn-submit" onclick="submitCase('case3',['rv','sept','ivc'],'done','sm3')">
-      SUBMIT FINDINGS
-    </button>
-    <div class="submit-msg" id="sm3"></div>
-  </div>
-
-  <!-- COMPLETION -->
-  <div class="card hidden" id="done">
-    <div class="done-glow">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
-        <path d="m9 12 2 2 4-4"/>
-      </svg>
-    </div>
-
-    <div class="done-title"><span>Mission Complete</span></div>
-    <p class="done-sub">All three cases resolved. You correctly identified the POCUS findings across tamponade physiology, volume overload, and right heart failure.</p>
-
-    <div class="debrief-grid">
-      <div class="debrief-card t1">
-        <div class="debrief-case">// CASE 01 — CARDIAC TAMPONADE</div>
-        <div class="debrief-dx">Pericardial Tamponade</div>
-        <div class="debrief-findings">
-          <span class="debrief-finding">Pericardial effusion</span>
-          <span class="debrief-finding">RV diastolic collapse</span>
-          <span class="debrief-finding">Plethoric IVC</span>
-        </div>
-      </div>
-      <div class="debrief-card t2">
-        <div class="debrief-case">// CASE 02 — ACUTE DECOMPENSATED HEART FAILURE</div>
-        <div class="debrief-dx">CHF Exacerbation</div>
-        <div class="debrief-findings">
-          <span class="debrief-finding">Reduced LV systolic function</span>
-          <span class="debrief-finding">Diffuse B-lines</span>
-          <span class="debrief-finding">Plethoric IVC</span>
-        </div>
-      </div>
-      <div class="debrief-card t3">
-        <div class="debrief-case">// CASE 03 — PULMONARY HTN / RV FAILURE</div>
-        <div class="debrief-dx">RV Failure</div>
-        <div class="debrief-findings">
-          <span class="debrief-finding">RV dilation</span>
-          <span class="debrief-finding">Septal flattening (D-sign)</span>
-          <span class="debrief-finding">Plethoric IVC</span>
-        </div>
-      </div>
-    </div>
-
-    <button class="restart-btn" onclick="location.reload()">↩ RESTART SIMULATION</button>
-  </div>
-
-</div><!-- /container -->
+</div>
 
 <script>
-/* ── State ─────────────────────────────────────────── */
+/* ════════════════════════════════════════
+   INSTRUCTOR PASSWORD
+════════════════════════════════════════ */
+const INSTRUCTOR_PW = 'POCUS2025';
+
+/* ════════════════════════════════════════
+   FINDINGS (fixed text, indexed 0–9)
+   Display numbers are session-assigned
+════════════════════════════════════════ */
+const FINDINGS = [
+  {n:0,text:'Collapsible IVC'},
+  {n:1,text:'Pericardial effusion'},
+  {n:2,text:'RV diastolic collapse'},
+  {n:3,text:'RV dilation'},
+  {n:4,text:'Septal flattening (D-sign)'},
+  {n:5,text:'Reduced LV systolic function'},
+  {n:6,text:'Hyperdynamic LV function'},
+  {n:7,text:'Diffuse B-lines'},
+  {n:8,text:'A-lines'},
+  {n:9,text:'Plethoric IVC'},
+];
+
+/* ════════════════════════════════════════
+   CASE DATA
+   correct / bfOriginalOrder use original
+   finding indices (not display numbers)
+════════════════════════════════════════ */
+const CASES = [
+  {
+    n:1,videoCode:'KQTR',
+    progressLabel:'SHOCK',title:'Undifferentiated Shock',
+    vignette:'68-year-old male presenting with 3 hours of progressive dyspnea, hypotension (BP 82/54), and muffled heart sounds. Tachycardic and diaphoretic. History of recently treated lung adenocarcinoma.',
+    views:[
+      {label:'Parasternal Long Axis (PLSA)',src:'videos/case1_cardiac.mp4'},
+      {label:'Lung Fields',src:'videos/case1_lung.mp4'},
+      {label:'IVC',src:'videos/case1_ivc.mp4'},
+    ],
+    mapping:[7,3,9,1,5,0,4,2,8,6],
+    correct:[1,2,7,9],
+    bfOriginalOrder:[9,2,7,1],
+    bfLabels:['Plethoric IVC','RV Diastolic Collapse','Diffuse B-lines','Pericardial Effusion'],
+    quiz:{
+      dx:{
+        q:'What is the most likely diagnosis?',
+        options:[
+          {l:'A',t:'Acute Decompensated Heart Failure'},
+          {l:'B',t:'Tension Pneumothorax'},
+          {l:'C',t:'Cardiac Tamponade'},
+          {l:'D',t:'Massive Pulmonary Embolism'},
+          {l:'E',t:'Septic Shock'},
+        ],
+        correct:'C',
+      },
+      ns:{
+        q:'What is the best initial management step?',
+        options:[
+          {l:'A',t:'Immediate pericardiocentesis'},
+          {l:'B',t:'Needle decompression of the chest'},
+          {l:'C',t:'IV furosemide 80mg'},
+          {l:'D',t:'Systemic anticoagulation with heparin'},
+          {l:'E',t:'Aggressive IV crystalloid resuscitation'},
+        ],
+        correct:'A',
+      },
+    },
+    diagnosis:'Cardiac Tamponade',dc:'dc1',
+  },
+  {
+    n:2,videoCode:'VJXM',
+    progressLabel:'RESP DISTRESS',title:'Acute Respiratory Distress',
+    vignette:'54-year-old female with known cardiomyopathy presents with 5-day history of worsening exertional dyspnea, 2-pillow orthopnea, and bilateral pitting edema to the knees. Denies recent medication compliance.',
+    views:[
+      {label:'Parasternal Long Axis (PLSA)',src:'videos/case2_cardiac.mp4'},
+      {label:'Lung Fields',src:'videos/case2_lung.mp4'},
+      {label:'IVC',src:'videos/case2_ivc.mp4'},
+    ],
+    mapping:[5,1,8,4,6,9,2,0,7,3],
+    correct:[5,7,9],
+    bfOriginalOrder:[9,7,5],
+    bfLabels:['Plethoric IVC','Diffuse B-lines','Reduced LV Function'],
+    quiz:{
+      dx:{
+        q:'What is the most likely diagnosis?',
+        options:[
+          {l:'A',t:'Cardiac Tamponade'},
+          {l:'B',t:'Massive Pulmonary Embolism'},
+          {l:'C',t:'Hypovolemic Shock'},
+          {l:'D',t:'Acute Decompensated Heart Failure'},
+          {l:'E',t:'Tension Pneumothorax'},
+        ],
+        correct:'D',
+      },
+      ns:{
+        q:'What is the best initial management step?',
+        options:[
+          {l:'A',t:'Pericardiocentesis'},
+          {l:'B',t:'IV furosemide + non-invasive positive pressure ventilation'},
+          {l:'C',t:'Aggressive IV crystalloid resuscitation (2L bolus)'},
+          {l:'D',t:'Urgent surgical consultation'},
+          {l:'E',t:'Systemic anticoagulation with heparin'},
+        ],
+        correct:'B',
+      },
+    },
+    diagnosis:'Acute Decompensated Heart Failure',dc:'dc2',
+  },
+  {
+    n:3,videoCode:'LPNC',
+    progressLabel:'SYNCOPE',title:'Syncope & Hypoxia',
+    vignette:'42-year-old male with untreated obstructive sleep apnea presents with acute onset dyspnea, syncope, and pleuritic chest pain. O\u2082 saturation 84% on room air. JVD present, no peripheral edema, lungs clear to auscultation.',
+    views:[
+      {label:'Parasternal Long Axis (PLSA)',src:'videos/case3_cardiac_plsa.mp4'},
+      {label:'Parasternal Short Axis (PSSA)',src:'videos/case3_cardiac_pssa.mp4'},
+      {label:'Lung Fields',src:'videos/case3_lung.mp4'},
+      {label:'IVC',src:'videos/case3_ivc.mp4'},
+    ],
+    mapping:[4,6,0,8,2,5,9,1,3,7],
+    correct:[3,4,8,9],
+    bfOriginalOrder:[9,3,8,4],
+    bfLabels:['Plethoric IVC','RV Dilation','A-lines','Septal Flattening'],
+    quiz:{
+      dx:{
+        q:'What is the most likely diagnosis?',
+        options:[
+          {l:'A',t:'Acute Decompensated Heart Failure'},
+          {l:'B',t:'Acute-on-Chronic RV Failure / Pulmonary Hypertension'},
+          {l:'C',t:'Cardiac Tamponade'},
+          {l:'D',t:'Hypovolemic Shock'},
+          {l:'E',t:'Septic Shock'},
+        ],
+        correct:'B',
+      },
+      ns:{
+        q:'What is the best initial management step?',
+        options:[
+          {l:'A',t:'Aggressive IV diuresis'},
+          {l:'B',t:'Pericardiocentesis'},
+          {l:'C',t:'Aggressive IV crystalloid bolus resuscitation'},
+          {l:'D',t:'Supplemental oxygen; avoid volume overload; pulmonology/cardiology consultation'},
+          {l:'E',t:'Systemic thrombolytics'},
+        ],
+        correct:'D',
+      },
+    },
+    diagnosis:'Pulmonary HTN / RV Failure',dc:'dc3',
+  },
+  {
+    n:4,videoCode:'DQMV',
+    progressLabel:'TRAUMA',title:'Trauma',
+    vignette:'22-year-old male, restrained driver in high-speed MVC. BP 72/48, HR 136, diaphoretic. GCS 14. Diffuse abdominal tenderness on palpation.',
+    views:[
+      {label:'Subxiphoid (SX)',src:'videos/case4_cardiac.mp4'},
+      {label:'Lung Fields',src:'videos/case4_lung.mp4'},
+      {label:'IVC',src:'videos/case4_ivc.mp4'},
+      {label:'FAST Exam',src:'videos/case4_fast.mp4'},
+    ],
+    mapping:[3,9,7,1,0,2,8,4,6,5],
+    correct:[0,6,8],
+    bfOriginalOrder:[0,8,6],
+    bfLabels:['Collapsible IVC','A-lines','Hyperdynamic LV'],
+    quiz:{
+      dx:{
+        q:'What is the most likely diagnosis?',
+        options:[
+          {l:'A',t:'Neurogenic Shock'},
+          {l:'B',t:'Septic Shock'},
+          {l:'C',t:'Cardiac Tamponade'},
+          {l:'D',t:'Acute Decompensated Heart Failure'},
+          {l:'E',t:'Hemorrhagic Shock'},
+        ],
+        correct:'E',
+      },
+      ns:{
+        q:'What is the best initial management step?',
+        options:[
+          {l:'A',t:'Activate massive transfusion protocol; urgent surgical consultation'},
+          {l:'B',t:'Aggressive IV crystalloid resuscitation (2–4L bolus)'},
+          {l:'C',t:'IV antibiotics and blood cultures'},
+          {l:'D',t:'Pericardiocentesis'},
+          {l:'E',t:'IV furosemide and supplemental oxygen'},
+        ],
+        correct:'A',
+      },
+    },
+    diagnosis:'Hemorrhagic Shock',dc:'dc4',
+  },
+];
+
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+let instrUnlocked = false;
 let casesDone = 0;
 
-/* ── Start ─────────────────────────────────────────── */
+/* ════════════════════════════════════════
+   AUDIO — Web Audio API sound effects
+════════════════════════════════════════ */
+let _actx;
+function actx(){
+  if(!_actx) _actx = new (window.AudioContext||window.webkitAudioContext)();
+  if(_actx.state==='suspended') _actx.resume();
+  return _actx;
+}
+
+function beep(freq, type, t, dur, vol=0.28){
+  const ctx=actx(), o=ctx.createOscillator(), g=ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  o.type=type;
+  o.frequency.setValueAtTime(freq, ctx.currentTime+t);
+  g.gain.setValueAtTime(vol, ctx.currentTime+t);
+  g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+t+dur);
+  o.start(ctx.currentTime+t);
+  o.stop(ctx.currentTime+t+dur+0.02);
+}
+
+function sweep(f0, f1, t, dur, vol=0.22){
+  const ctx=actx(), o=ctx.createOscillator(), g=ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  o.type='sine';
+  o.frequency.setValueAtTime(f0, ctx.currentTime+t);
+  o.frequency.exponentialRampToValueAtTime(f1, ctx.currentTime+t+dur);
+  g.gain.setValueAtTime(vol, ctx.currentTime+t);
+  g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+t+dur);
+  o.start(ctx.currentTime+t);
+  o.stop(ctx.currentTime+t+dur+0.02);
+}
+
+function noise(dur, vol=0.12){
+  const ctx=actx();
+  const buf=ctx.createBuffer(1,ctx.sampleRate*dur,ctx.sampleRate);
+  const d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,1.5);
+  const src=ctx.createBufferSource(), g=ctx.createGain();
+  const filt=ctx.createBiquadFilter();
+  filt.type='bandpass'; filt.frequency.value=180; filt.Q.value=0.8;
+  src.buffer=buf; src.connect(filt); filt.connect(g); g.connect(ctx.destination);
+  g.gain.setValueAtTime(vol, ctx.currentTime);
+  src.start(); src.stop(ctx.currentTime+dur);
+}
+
+const SFX = {
+  // Harsh access-denied buzz — three descending sawtooth pulses
+  wrong(){
+    noise(0.25, 0.18);
+    [280,220,170].forEach((f,i)=>beep(f,'sawtooth',i*0.07,0.1,0.18));
+  },
+
+  // Clean 3-note ascending chime — findings confirmed / video unlocked
+  confirm(){
+    [523,659,784].forEach((f,i)=>beep(f,'sine',i*0.09,0.22,0.25));
+  },
+
+  // Mechanical click-click then rising electronic tone — blood flow code cracked
+  codeAccepted(){
+    beep(120,'square',0,   0.04,0.35);
+    beep(180,'square',0.05,0.04,0.35);
+    beep(240,'square',0.10,0.04,0.30);
+    beep(660,'sine',  0.16,0.35,0.22);
+    beep(990,'sine',  0.42,0.28,0.18);
+  },
+
+  // 5-note triumphant arpeggio — quiz correct
+  quizCorrect(){
+    [392,494,587,740,880].forEach((f,i)=>beep(f,'sine',i*0.1,0.32,0.26));
+  },
+
+  // Cinematic whoosh + sparkle — case-to-case transition
+  advance(){
+    sweep(100, 1400, 0,    0.45, 0.20);
+    sweep(200, 800,  0.05, 0.35, 0.12);
+    [900,1200,1600].forEach((f,i)=>beep(f,'sine',0.38+i*0.08,0.18,0.12));
+  },
+
+  // Full celebration fanfare — escape achieved
+  victory(){
+    // Low rumble boom × 3 (celebration hits)
+    [0, 0.38, 0.72].forEach(t=>{
+      noise(0.35, 0.28);
+      sweep(90,40,t,0.4,0.32);
+      beep(55,'sine',t,0.35,0.22);
+    });
+    // Rapid ascending run C4 → C6
+    [261.6,329.6,392,493.9,523.2,659.3,783.9,1046.5,1318.5]
+      .forEach((f,i)=>beep(f,'sine',0.08+i*0.052,0.28,0.22));
+    // Triumphant major chord crash
+    [130.8,261.6,329.6,392,523.2,659.3]
+      .forEach(f=>beep(f,'sine',0.58,3.2,0.16));
+    // Second ascending run (higher, faster)
+    [523.2,659.3,783.9,1046.5,1318.5,1567.9,2093]
+      .forEach((f,i)=>beep(f,'sine',1.05+i*0.045,0.22,0.14));
+    // Fireworks sparkle pops
+    [1047,1319,1568,2093,2637,1568,1319,1047,2093,2637]
+      .forEach((f,i)=>beep(f,'sine',0.72+i*0.1,0.16,0.08));
+    // Final sustained chord + harmonics
+    [65.4,130.8,261.6,329.6,392,523.2,659.3,783.9]
+      .forEach(f=>beep(f,'sine',1.45,3.5,0.1));
+    // Top shimmer
+    [2093,2637,3136,4186].forEach((f,i)=>beep(f,'sine',1.6+i*0.12,1.0,0.055));
+    // One final boom
+    sweep(120,50,1.42,0.6,0.28);
+    noise(0.5,0.22);
+  },
+};
+
+/* ════════════════════════════════════════
+   UTILITIES
+════════════════════════════════════════ */
+function $(id){return document.getElementById(id);}
+function show(id){
+  const el=$(id);if(!el)return;
+  el.classList.remove('hidden');
+  void el.offsetWidth;
+  el.classList.add('animate-in');
+  setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+function setMsg(id,txt,type){const el=$(id);if(!el)return;el.textContent=txt;el.className='msg '+type;}
+
+// Given an original finding index and a case, return its display number
+function displayNumOf(origIdx,c){return c.mapping.indexOf(origIdx);}
+
+// Compute blood flow code for a case using that case's fixed mapping
+function computeBFCode(c){return c.bfOriginalOrder.map(o=>displayNumOf(o,c)).join('');}
+
+/* ════════════════════════════════════════
+   PROGRESS BAR
+════════════════════════════════════════ */
+function buildProgress(){
+  let h='';
+  CASES.forEach((c,i)=>{
+    h+=`<div class="step-node">
+      <div class="step-dot ${i===0?'active':''}" id="dot${c.n}"><span>${c.n}</span></div>
+      <div class="step-label ${i===0?'active':''}" id="lbl${c.n}">${c.progressLabel}</div>
+    </div>`;
+    if(i<CASES.length-1)h+=`<div class="step-line"><div class="step-line-fill" id="line${c.n}"></div></div>`;
+  });
+  $('progress-steps').innerHTML=h;
+}
+
+function updateProgress(done){
+  $('header-status').textContent=done>=4?'✓ COMPLETE':`CASE ${Math.min(done+1,4)} OF 4`;
+  for(let i=1;i<=4;i++){
+    const dot=$('dot'+i),lbl=$('lbl'+i),ln=$('line'+i);
+    if(!dot)continue;
+    if(i<=done){dot.className='step-dot done';lbl.className='step-label done';if(ln)ln.classList.add('full');}
+    else if(i===done+1){dot.className='step-dot active';lbl.className='step-label active';}
+  }
+}
+
+/* ════════════════════════════════════════
+   RENDER ALL CASES
+════════════════════════════════════════ */
+function renderCases(){
+  let h='';
+  CASES.forEach(c=>{
+    const first=c.n===1;
+
+    h+=`<div id="case-section-${c.n}" class="case-section${first?'':' hidden'}">`;
+
+    /* SCENARIO CARD — always visible within its section */
+    h+=`<div class="card" id="scenario-${c.n}">
+      <div class="case-badge">CASE 0${c.n} \u2014 ${c.progressLabel}</div>
+      <div class="case-title">${c.title}</div>
+      <div class="vignette">${c.vignette}</div>
+      <div class="views-block">
+        <div class="views-title">// Obtain the following views</div>
+        ${c.views.map(v=>`<div class="view-item"><div class="view-dot"></div><span>${v.label}</span></div>`).join('')}
+      </div>
+      <hr class="divider"/>
+      <div class="input-label">// Enter instructor video code to unlock clips</div>
+      <input class="code-input" id="vcode-${c.n}" placeholder="\u00b7 \u00b7 \u00b7 \u00b7" maxlength="4"
+             onkeydown="if(event.key==='Enter')unlockVideo(${c.n})"/>
+      <div class="msg" id="vmsg-${c.n}"></div>
+      <button class="btn-submit" onclick="unlockVideo(${c.n})">UNLOCK VIDEOS</button>
+    </div>`;
+
+    /* VIDEOS + FINDINGS CARD */
+    h+=`<div class="card hidden" id="videos-${c.n}">
+      <div class="case-badge">CASE 0${c.n} \u2014 VIDEO REVIEW</div>
+      <div class="video-grid">
+        ${c.views.map(v=>`<div><div class="vid-label">${v.label}</div><video controls src="${v.src}"></video></div>`).join('')}
+      </div>
+      <div class="findings-title">// Select all findings present</div>
+      <div class="findings-list" id="findings-${c.n}"></div>
+      <button class="btn-submit" onclick="submitFindings(${c.n})">SUBMIT FINDINGS</button>
+      <div class="submit-msg" id="smsg-${c.n}"></div>
+
+      <div id="bfsec-${c.n}" class="hidden">
+        <hr class="divider"/>
+        <div class="bf-box">
+          <div class="bf-title">// Derive Blood Flow Code</div>
+          <p class="bf-instructions">
+            Correct findings identified. Arrange them in the direction of
+            <strong style="color:var(--text)">blood flow through the heart — from venous return through systemic outflow</strong> —
+            to generate your blood flow sequence. Enter the number sequence below (no spaces).
+          </p>
+          <div class="bf-chips" id="bfchips-${c.n}"></div>
+          <div class="input-label">// Blood flow sequence</div>
+          <input class="code-input" id="bfcode-${c.n}" placeholder="e.g. 1234" maxlength="4" style="letter-spacing:.3em;"
+                 onkeydown="if(event.key==='Enter')submitBF(${c.n})"/>
+          <div class="msg" id="bfmsg-${c.n}"></div>
+          <button class="btn-submit" onclick="submitBF(${c.n})">SUBMIT BLOOD FLOW CODE</button>
+        </div>
+      </div>
+
+      <div id="quizsec-${c.n}" class="hidden">
+        <hr class="divider"/>
+        <div class="quiz-box">
+          <div class="quiz-title">// Clinical Integration</div>
+
+          <div class="quiz-q-label">Question 1 of 2</div>
+          <div class="quiz-q-text">${c.quiz.dx.q}</div>
+          <div class="quiz-options" id="dx-${c.n}">
+            ${c.quiz.dx.options.map(o=>`
+              <div class="quiz-opt" onclick="selectOpt(this,'dx-${c.n}')" data-letter="${o.l}">
+                <div class="quiz-letter">${o.l}</div>
+                <div class="quiz-opt-text">${o.t}</div>
+              </div>`).join('')}
+          </div>
+
+          <div class="quiz-q-label">Question 2 of 2</div>
+          <div class="quiz-q-text">${c.quiz.ns.q}</div>
+          <div class="quiz-options" id="ns-${c.n}">
+            ${c.quiz.ns.options.map(o=>`
+              <div class="quiz-opt" onclick="selectOpt(this,'ns-${c.n}')" data-letter="${o.l}">
+                <div class="quiz-letter">${o.l}</div>
+                <div class="quiz-opt-text">${o.t}</div>
+              </div>`).join('')}
+          </div>
+
+          <button class="btn-quiz" onclick="submitQuiz(${c.n})">SUBMIT CLINICAL ASSESSMENT</button>
+          <div class="quiz-submit-msg" id="qmsg-${c.n}"></div>
+        </div>
+      </div>
+    </div>
+    </div>`;
+  });                // end forEach case
+
+  /* COMPLETION CARD */
+  h+=`<div id="case-section-done" class="case-section hidden">
+  <div class="card" id="done-card">
+    <div class="done-wrap">
+      <div class="done-glow">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="9,12 11,14 15,10"/>
+        </svg>
+      </div>
+      <div class="done-title"><span>Mission Complete</span></div>
+      <p class="done-sub">All four cases resolved. You correctly identified POCUS findings, derived blood flow physiology, and synthesized clinical diagnoses and management across four shock states.</p>
+      <div class="debrief-grid">
+        ${CASES.map(c=>`<div class="debrief-card ${c.dc}">
+          <div class="dc-label">// CASE 0${c.n} \u2014 ${c.progressLabel}</div>
+          <div class="dc-dx">${c.diagnosis}</div>
+          <div class="dc-findings">${c.bfOriginalOrder.map((o,i)=>`<span class="dc-finding">${c.bfLabels[i]}</span>`).join('')}</div>
+        </div>`).join('')}
+      </div>
+      <button class="restart-btn" onclick="location.reload()">\u21a9 RESTART SIMULATION</button>
+    </div>
+  </div>
+  </div>`;
+
+  $('main-container').innerHTML=h;
+}
+
+/* ════════════════════════════════════════
+   POPULATE FINDINGS
+   Display positions 0–9 in order,
+   content assigned by sessionOrder
+════════════════════════════════════════ */
+function populateFindings(caseN){
+  const c=CASES[caseN-1];
+  $('findings-'+caseN).innerHTML=
+    c.mapping.map((origIdx,displayPos)=>{
+      const f=FINDINGS[origIdx];
+      return `<div class="finding-item" onclick="toggleCheck(this)" data-orig="${origIdx}" data-display="${displayPos}">
+        <span class="finding-num">${displayPos}</span>
+        <div class="check-box">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2,6 5,9 10,3"/>
+          </svg>
+        </div>
+        <span class="finding-text">${f.text}</span>
+      </div>`;
+    }).join('');
+}
+
+function toggleCheck(el){el.classList.toggle('checked');}
+
+/* ════════════════════════════════════════
+   VIDEO UNLOCK
+════════════════════════════════════════ */
+function unlockVideo(n){
+  const c=CASES[n-1];
+  const inp=$('vcode-'+n);
+  const val=inp.value.trim().toUpperCase();
+  if(val===c.videoCode){
+    SFX.confirm();
+    playTensionSounds(0);
+    inp.classList.add('success');
+    setMsg('vmsg-'+n,'// ACCESS GRANTED','success');
+    populateFindings(n);
+    setTimeout(()=>show('videos-'+n),400);
+  } else {
+    SFX.wrong();
+    inp.classList.remove('success');inp.classList.add('error');
+    setMsg('vmsg-'+n,'// INVALID CODE \u2014 RETRY','error');
+    inp.classList.add('shake');
+    setTimeout(()=>{inp.classList.remove('shake','error');inp.value='';inp.focus();},400);
+  }
+}
+
+/* ════════════════════════════════════════
+   SUBMIT FINDINGS
+════════════════════════════════════════ */
+function submitFindings(n){
+  const c=CASES[n-1];
+  // Get selected original indices
+  const selectedOrig=[...document.querySelectorAll(`#findings-${n} .finding-item.checked`)]
+    .map(el=>parseInt(el.dataset.orig));
+  const ok=selectedOrig.length===c.correct.length&&
+    JSON.stringify([...c.correct].sort((a,b)=>a-b))===
+    JSON.stringify([...selectedOrig].sort((a,b)=>a-b));
+
+  const sm=$('smsg-'+n);
+  if(ok){
+    SFX.confirm();
+    playTensionSounds(1);
+    sm.textContent='// FINDINGS CONFIRMED';sm.className='submit-msg success visible';
+    // Show chips with DISPLAY numbers (what student sees)
+    $('bfchips-'+n).innerHTML=selectedOrig.map(origIdx=>{
+      const f=FINDINGS[origIdx];
+      const displayPos=displayNumOf(origIdx,c);
+      return `<div class="bf-chip">[${displayPos}] ${f.text}</div>`;
+    }).join('');
+    setTimeout(()=>show('bfsec-'+n),500);
+  } else {
+    SFX.wrong();
+    sm.textContent='// FINDINGS INCOMPLETE OR INCORRECT \u2014 REASSESS';
+    sm.className='submit-msg error visible';
+    $('videos-'+n).classList.add('shake');
+    setTimeout(()=>$('videos-'+n).classList.remove('shake'),400);
+    setTimeout(()=>sm.classList.remove('visible'),3500);
+  }
+}
+
+/* ════════════════════════════════════════
+   BLOOD FLOW CODE
+════════════════════════════════════════ */
+function submitBF(n){
+  const c=CASES[n-1];
+  const inp=$('bfcode-'+n);
+  const val=inp.value.trim();
+  const expected=computeBFCode(c);
+  if(val===expected){
+    SFX.codeAccepted();
+    playTensionSounds(2);
+    inp.classList.add('success');
+    setMsg('bfmsg-'+n,'// BLOOD FLOW SEQUENCE CONFIRMED','success');
+    setTimeout(()=>show('quizsec-'+n),600);
+  } else {
+    SFX.wrong();
+    inp.classList.remove('success');inp.classList.add('error');
+    setMsg('bfmsg-'+n,'// INCORRECT \u2014 RECONSIDER BLOOD FLOW ORDER','error');
+    inp.classList.add('shake');
+    setTimeout(()=>{inp.classList.remove('shake','error');inp.value='';inp.focus();},400);
+  }
+}
+
+/* ════════════════════════════════════════
+   QUIZ
+════════════════════════════════════════ */
+function selectOpt(el,groupId){
+  document.querySelectorAll('#'+groupId+' .quiz-opt').forEach(o=>o.classList.remove('selected','wrong-ans'));
+  el.classList.add('selected');
+}
+
+function submitQuiz(n){
+  const c=CASES[n-1];
+  const dxSel=document.querySelector('#dx-'+n+' .quiz-opt.selected');
+  const nsSel=document.querySelector('#ns-'+n+' .quiz-opt.selected');
+  const qmsg=$('qmsg-'+n);
+
+  if(!dxSel||!nsSel){
+    qmsg.textContent='// SELECT ONE ANSWER FOR EACH QUESTION';
+    qmsg.className='quiz-submit-msg error visible';
+    setTimeout(()=>qmsg.classList.remove('visible'),2500);
+    return;
+  }
+
+  const dxOk=dxSel.dataset.letter===c.quiz.dx.correct;
+  const nsOk=nsSel.dataset.letter===c.quiz.ns.correct;
+
+  if(dxOk&&nsOk){
+    dxSel.classList.add('correct-ans');
+    nsSel.classList.add('correct-ans');
+    qmsg.textContent=n<4?'// CORRECT \u2014 CASE '+(n+1)+' UNLOCKED':'// CORRECT \u2014 SIMULATION COMPLETE';
+    qmsg.className='quiz-submit-msg success visible';
+    casesDone++;updateProgress(casesDone);
+    const nextSection=n<4?'case-section-'+(n+1):'case-section-done';
+    if(n<4){
+      SFX.quizCorrect();
+      setTimeout(()=>transitionToCase(nextSection),900);
+    } else {
+      setTimeout(()=>SFX.victory(), 300);
+      setTimeout(()=>transitionToCase(nextSection),900);
+    }
+  } else {
+    SFX.wrong();
+    if(!dxOk)dxSel.classList.add('wrong-ans');
+    if(!nsOk)nsSel.classList.add('wrong-ans');
+    qmsg.textContent='// ONE OR MORE ANSWERS INCORRECT \u2014 REASSESS';
+    qmsg.className='quiz-submit-msg error visible';
+    // Clear wrong selections after shake so student must re-select
+    $('videos-'+n).classList.add('shake');
+    setTimeout(()=>{
+      $('videos-'+n).classList.remove('shake');
+      if(!dxOk){dxSel.classList.remove('selected','wrong-ans');}
+      if(!nsOk){nsSel.classList.remove('selected','wrong-ans');}
+    },500);
+    setTimeout(()=>qmsg.classList.remove('visible'),3500);
+  }
+}
+
+/* ════════════════════════════════════════
+   START SCREEN MUSIC
+════════════════════════════════════════ */
+let _musicMaster = null;
+let _musicOscs   = [];
+let _musicArp    = null;
+let _musicActive = false;
+
+function playStartMusic(){
+  if(_musicActive) return;
+  _musicActive = true;
+  const ctx = actx();
+
+  // Master gain node — fade in, easy fade out later
+  _musicMaster = ctx.createGain();
+  _musicMaster.gain.setValueAtTime(0, ctx.currentTime);
+  _musicMaster.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 2.5);
+  _musicMaster.connect(ctx.destination);
+
+  // Delay / shimmer send
+  const dly  = ctx.createDelay(1.0);
+  const fb   = ctx.createGain();
+  const wet  = ctx.createGain();
+  dly.delayTime.value = 0.48;
+  fb.gain.value = 0.28;
+  wet.gain.value = 0.18;
+  dly.connect(fb); fb.connect(dly);
+  dly.connect(wet); wet.connect(_musicMaster);
+
+  // Pad — Cm7 chord (C, Eb, G, Bb) across two octaves
+  const pads = [
+    {f:65.4,  t:'sine',     v:0.11, r:0.14},
+    {f:130.8, t:'sine',     v:0.09, r:0.21},
+    {f:155.6, t:'triangle', v:0.07, r:0.17},
+    {f:196.0, t:'triangle', v:0.06, r:0.26},
+    {f:233.1, t:'sine',     v:0.05, r:0.12},
+    {f:261.6, t:'sine',     v:0.04, r:0.19},
+  ];
+  pads.forEach(({f,t,v,r})=>{
+    const osc=ctx.createOscillator(), g=ctx.createGain();
+    const lfo=ctx.createOscillator(), lg=ctx.createGain();
+    osc.type=t; osc.frequency.value=f;
+    osc.detune.value=(Math.random()-.5)*7;
+    lfo.type='sine'; lfo.frequency.value=r;
+    lg.gain.value=v*0.28;
+    g.gain.value=v;
+    lfo.connect(lg); lg.connect(g.gain);
+    osc.connect(g);
+    g.connect(_musicMaster); g.connect(dly);
+    osc.start(); lfo.start();
+    _musicOscs.push(osc,lfo);
+  });
+
+  // Arpeggio — haunting Cm ascending/descending figure
+  const arpNotes=[261.6,311.1,392.0,466.2,392.0,311.1,261.6,233.1];
+  let ai=0;
+  function arpStep(){
+    if(!_musicActive) return;
+    const c=actx();
+    const o=c.createOscillator(), g=c.createGain();
+    o.type='sine';
+    o.frequency.value=arpNotes[ai%arpNotes.length]; ai++;
+    g.gain.setValueAtTime(0,c.currentTime);
+    g.gain.linearRampToValueAtTime(0.07,c.currentTime+0.03);
+    g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+0.55);
+    o.connect(g);
+    g.connect(_musicMaster); g.connect(dly);
+    o.start(); o.stop(c.currentTime+0.6);
+  }
+  arpStep();
+  _musicArp=setInterval(arpStep, 520);
+}
+
+function stopStartMusic(){
+  _musicActive=false;
+  clearInterval(_musicArp); _musicArp=null;
+  if(_musicMaster){
+    const ctx=actx();
+    _musicMaster.gain.setValueAtTime(_musicMaster.gain.value,ctx.currentTime);
+    _musicMaster.gain.linearRampToValueAtTime(0,ctx.currentTime+1.0);
+    _musicOscs.forEach(o=>{try{o.stop(ctx.currentTime+1.2);}catch(e){}});
+    _musicOscs=[]; _musicMaster=null;
+  }
+}
+
+/* ════════════════════════════════════════
+   COMPLETION MUSIC — Cmaj7 pad + bright
+   arpeggio, fades in after victory fanfare
+════════════════════════════════════════ */
+let _winMaster=null, _winOscs=[], _winArp=null, _winActive=false;
+
+function playCompletionMusic(){
+  if(_winActive)return;
+  _winActive=true;
+  const ctx=actx();
+
+  _winMaster=ctx.createGain();
+  _winMaster.gain.setValueAtTime(0,ctx.currentTime);
+  _winMaster.gain.linearRampToValueAtTime(1.0,ctx.currentTime+2.8);
+  _winMaster.connect(ctx.destination);
+
+  // Lighter, shorter delay — open air not cave
+  const dly=ctx.createDelay(0.6); dly.delayTime.value=0.28;
+  const dfb=ctx.createGain(); dfb.gain.value=0.12;
+  const dwet=ctx.createGain(); dwet.gain.value=0.10;
+  dly.connect(dfb); dfb.connect(dly);
+  dly.connect(dwet); dwet.connect(_winMaster);
+
+  // C major pentatonic pad — bright mid-to-high register, no dark bass, no B natural
+  // Drone volumes reduced — arpeggio sits above the pad clearly
+  [
+    {f:196.0, t:'sine',     v:0.055, r:0.18},
+    {f:261.6, t:'sine',     v:0.062, r:0.22},
+    {f:329.6, t:'sine',     v:0.055, r:0.16},
+    {f:392.0, t:'sine',     v:0.048, r:0.20},
+    {f:440.0, t:'triangle', v:0.032, r:0.14},
+    {f:523.2, t:'sine',     v:0.038, r:0.19},
+    {f:659.3, t:'sine',     v:0.026, r:0.15},
+  ].forEach(({f,t,v,r})=>{
+    const osc=ctx.createOscillator(), g=ctx.createGain();
+    const lfo=ctx.createOscillator(), lg=ctx.createGain();
+    osc.type=t; osc.frequency.value=f;
+    osc.detune.value=(Math.random()-.5)*4;
+    lfo.type='sine'; lfo.frequency.value=r;
+    lg.gain.value=v*0.08; g.gain.value=v;
+    lfo.connect(lg); lg.connect(g.gain);
+    osc.connect(g); g.connect(_winMaster); g.connect(dly);
+    osc.start(); lfo.start();
+    _winOscs.push(osc,lfo);
+  });
+
+  // Ascending-only arpeggio — C major pentatonic, wide octave leaps, always rising
+  const arpNotes=[261.6,329.6,392.0,523.2,659.3,783.9];
+  let ai=0;
+  function arpStep(){
+    if(!_winActive)return;
+    const c=actx();
+    const o=c.createOscillator(), g=c.createGain();
+    o.type='sine';
+    o.frequency.value=arpNotes[ai%arpNotes.length]; ai++;
+    g.gain.setValueAtTime(0,c.currentTime);
+    g.gain.linearRampToValueAtTime(0.09,c.currentTime+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+0.38);
+    o.connect(g); g.connect(_winMaster); g.connect(dly);
+    o.start(); o.stop(c.currentTime+0.42);
+  }
+  arpStep();
+  _winArp=setInterval(arpStep,380);
+}
+
+/* ════════════════════════════════════════
+   TENSION SOUNDS — 3 stages within each case
+   Stage 0: clips + findings  (baseline)
+   Stage 1: blood flow        (faster)
+   Stage 2: clinical quiz     (urgent)
+   Stops on case transition; resets each case.
+════════════════════════════════════════ */
+let _tIvals=[], _tActive=false;
+
+const TENSION=[
+  {tickMs:850, tickHz:900,  tickVol:0.055, thudMs:4100, thudVol:0.12},
+  {tickMs:580, tickHz:980,  tickVol:0.072, thudMs:2800, thudVol:0.16},
+  {tickMs:360, tickHz:1100, tickVol:0.095, thudMs:1800, thudVol:0.21},
+];
+
+function playTensionSounds(stage){
+  stopTensionSounds();
+  _tActive=true;
+  const cfg=TENSION[stage]||TENSION[0];
+
+  function tick(){
+    if(!_tActive)return;
+    const ctx=actx();
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type='sine'; o.frequency.value=cfg.tickHz;
+    g.gain.setValueAtTime(cfg.tickVol,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+0.035);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(); o.stop(ctx.currentTime+0.04);
+  }
+
+  function thud(){
+    if(!_tActive)return;
+    sweep(120,50,0,0.5,cfg.thudVol);
+    beep(55,'sine',0,0.4,cfg.thudVol*0.85);
+  }
+
+  tick(); thud();
+  _tIvals.push(setInterval(tick,cfg.tickMs), setInterval(thud,cfg.thudMs));
+}
+
+function stopTensionSounds(){
+  _tActive=false;
+  _tIvals.forEach(id=>clearInterval(id));
+  _tIvals=[];
+}
+
+/* ════════════════════════════════════════
+   START
+════════════════════════════════════════ */
 function startApp(){
-  const s = document.getElementById('start');
+  stopStartMusic();
+  const s=$('start');
   s.classList.add('hiding');
   setTimeout(()=>{
     s.classList.add('hidden');
-    document.getElementById('app-header').classList.remove('hidden');
-    document.getElementById('progress-track').classList.remove('hidden');
-    document.getElementById('main-container').style.display = 'block';
-    showEl('gate1');
-  }, 600);
+    $('app-header').classList.remove('hidden');
+    $('progress-track').classList.remove('hidden');
+    $('main-container').classList.remove('hidden');
+    SFX.advance();
+  },600);
 }
 
-/* ── Reveal helper ─────────────────────────────────── */
-function showEl(id){
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.classList.remove('hidden');
-  el.classList.add('animate-in');
-  setTimeout(()=> el.scrollIntoView({behavior:'smooth',block:'start'}), 80);
-}
-
-/* ── Toggle checkbox ───────────────────────────────── */
-function toggleCheck(label){
-  const cb = label.querySelector('input[type=checkbox]');
-  cb.checked = !cb.checked;
-  label.classList.toggle('checked', cb.checked);
-}
-
-/* ── Unlock gate ────────────────────────────────────── */
-function unlock(inputId, code, caseId, msgId, lockId){
-  const input = document.getElementById(inputId);
-  const msg   = document.getElementById(msgId);
-  const lock  = document.getElementById(lockId);
-  const val   = input.value.trim().toUpperCase();
-
-  if(val === code){
-    input.classList.remove('error');
-    input.classList.add('success');
-    msg.textContent = '// ACCESS GRANTED';
-    msg.className = 'msg success';
-
-    lock.classList.add('unlocked');
-    lock.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="11" width="18" height="11" rx="2"/>
-      <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
-    </svg>`;
-
-    setTimeout(()=> showEl(caseId), 400);
-  } else {
-    input.classList.remove('success');
-    input.classList.add('error');
-    msg.textContent = '// INVALID CODE — RETRY';
-    msg.className = 'msg error';
-    input.classList.add('shake');
-    setTimeout(()=> input.classList.remove('shake'), 400);
-    input.value = '';
-    input.focus();
-  }
-}
-
-/* ── Get checked values ─────────────────────────────── */
-function getChecked(caseId){
-  return [...document.querySelectorAll('#'+caseId+' input[type=checkbox]:checked')]
-    .map(x => x.value);
-}
-
-/* ── Submit case ────────────────────────────────────── */
-function submitCase(caseId, required, nextId, smId){
-  const selected = getChecked(caseId);
-  const ok = required.length === selected.length &&
-             required.every(r => selected.includes(r));
-  const sm = document.getElementById(smId);
-
-  if(ok){
-    sm.textContent = '// FINDINGS CONFIRMED — CASE RESOLVED';
-    sm.className = 'submit-msg success visible';
-    casesDone++;
-    updateProgress(casesDone);
-
+/* ════════════════════════════════════════
+   CASE TRANSITION (full-screen wipe)
+════════════════════════════════════════ */
+function transitionToCase(nextSectionId){
+  const current=document.querySelector('.case-section:not(.hidden)');
+  const next=$(nextSectionId);
+  if(!next)return;
+  stopTensionSounds();
+  if(current){
+    current.classList.add('cs-exit');
+    SFX.advance();
     setTimeout(()=>{
-      showEl(nextId);
-      if(nextId === 'done') updateProgress(3);
-    }, 700);
+      current.classList.add('hidden');
+      current.classList.remove('cs-exit');
+      next.classList.remove('hidden');
+      next.classList.add('cs-enter');
+      window.scrollTo({top:0,behavior:'smooth'});
+      setTimeout(()=>next.classList.remove('cs-enter'),500);
+      if(nextSectionId==='case-section-done')
+        setTimeout(()=>playCompletionMusic(),2800);
+    },350);
   } else {
-    sm.textContent = '// FINDINGS INCOMPLETE OR INCORRECT — REASSESS';
-    sm.className = 'submit-msg error visible';
-
-    const card = document.getElementById(caseId);
-    card.classList.add('shake');
-    setTimeout(()=> card.classList.remove('shake'), 400);
-
-    setTimeout(()=>{
-      sm.classList.remove('visible');
-    }, 3500);
+    next.classList.remove('hidden');
+    next.classList.add('cs-enter');
+    window.scrollTo({top:0,behavior:'smooth'});
+    setTimeout(()=>next.classList.remove('cs-enter'),500);
+    if(nextSectionId==='case-section-done')
+      setTimeout(()=>playCompletionMusic(),2800);
   }
 }
 
-/* ── Progress bar ───────────────────────────────────── */
-function updateProgress(done){
-  const dots  = [null,'dot1','dot2','dot3'];
-  const lbls  = [null,'lbl1','lbl2','lbl3'];
-  const lines = [null,'line1','line2'];
-  const statuses = ['CASE 1 OF 3','CASE 1 OF 3','CASE 2 OF 3','CASE 3 OF 3'];
-
-  document.getElementById('header-status').textContent = statuses[done] || 'COMPLETE';
-
-  // Mark done dots
-  for(let i=1; i<=done; i++){
-    const d = document.getElementById(dots[i]);
-    const l = document.getElementById(lbls[i]);
-    if(d){ d.className = 'step-dot done'; d.textContent = ''; }
-    if(l){ l.className = 'step-label done'; }
-    if(i<=2){ const ln=document.getElementById(lines[i]); if(ln) ln.classList.add('full'); }
-  }
-
-  // Mark next active
-  if(done < 3){
-    const next = done + 1;
-    const d = document.getElementById(dots[next]);
-    const l = document.getElementById(lbls[next]);
-    if(d && !d.classList.contains('done')){ d.className='step-dot active'; }
-    if(l && !l.classList.contains('done')){ l.className='step-label active'; }
-  }
-
-  if(done===3){
-    document.getElementById('header-status').textContent = '✓ COMPLETE';
+/* ════════════════════════════════════════
+   INSTRUCTOR PORTAL
+════════════════════════════════════════ */
+function openInstructor(){
+  $('instr-overlay').classList.remove('hidden');
+  if(instrUnlocked){
+    $('pw-gate').classList.add('hidden');
+    $('instr-content').classList.remove('hidden');
+  } else {
+    $('pw-gate').classList.remove('hidden');
+    $('instr-content').classList.add('hidden');
+    setTimeout(()=>$('pw-input').focus(),100);
   }
 }
+function closeInstructor(){$('instr-overlay').classList.add('hidden');}
+
+function checkPw(){
+  const inp=$('pw-input');
+  if(inp.value===INSTRUCTOR_PW){
+    instrUnlocked=true;
+    $('pw-gate').classList.add('hidden');
+    buildInstructorContent();
+    $('instr-content').classList.remove('hidden');
+  } else {
+    inp.classList.add('error','shake');
+    $('pw-msg').textContent='// INCORRECT PASSWORD';
+    setTimeout(()=>{inp.classList.remove('error','shake');inp.value='';},400);
+  }
+}
+
+function buildInstructorContent(){
+  const steps=[
+    ['Show scenario','Launch the app. The <strong>Case 1 clinical scenario</strong> appears immediately — no code needed. Students read the vignette and note which POCUS views to acquire.'],
+    ['Acquire images','Direct students to obtain the listed views on a real machine or simulator. Supervise as needed.'],
+    ['Give video code','Once students have acquired the required views, provide the <strong>Video Code</strong> (table below). This unlocks the clips and numbered findings checklist.'],
+    ['Identify findings','Students review clips and select all correct findings from the list (displayed 0–9 in order, with content randomly assigned per session). They then submit their selection.'],
+    ['Blood flow code','On correct submission, students are prompted to arrange their identified findings in <strong>blood flow order from venous return through systemic outflow</strong>. The resulting number sequence (based on this session\'s number assignments) is entered and validated by the app. See current session codes below.'],
+    ['Clinical integration quiz','After confirming the blood flow code, a two-question quiz appears: <strong>most likely diagnosis</strong> and <strong>best initial management step</strong>. Students select A–E for each and submit. Both must be correct to advance.'],
+    ['Advance','Correct quiz answers unlock the next case\'s scenario. Repeat steps 2–6 for each case.'],
+    ['Debrief','After Case 4\'s quiz is passed, the completion screen reveals all diagnoses with blood flow rationale.'],
+  ];
+
+  const bfCodes=CASES.map(c=>computeBFCode(c));
+
+  $('instr-content').innerHTML=`
+  <div class="isec">
+    <div class="isec-title">// HOW TO RUN THE SIMULATION</div>
+    ${steps.map(([t,d],i)=>`<div class="istep"><div class="istep-n">${i+1}</div><div class="istep-t"><strong>${t}:</strong> ${d}</div></div>`).join('')}
+  </div>
+
+  <div class="isec">
+    <div class="isec-title">// VIDEO CODES &amp; ANSWERS</div>
+    <div class="iinfo">All codes are fixed and consistent across all devices.</div>
+    <table class="itbl">
+      <thead><tr><th>#</th><th>Diagnosis</th><th>Video Code</th><th>Blood Flow Code</th><th>Quiz Dx</th><th>Quiz Next Step</th></tr></thead>
+      <tbody>
+        ${CASES.map((c,i)=>`<tr>
+          <td style="font-family:var(--mono);font-size:.82rem;">0${c.n}</td>
+          <td>${c.diagnosis}</td>
+          <td><span class="cpill cpill-a">${c.videoCode}</span></td>
+          <td><span class="cpill cpill-g">${bfCodes[i]}</span></td>
+          <td><span class="cpill cpill-p">${c.quiz.dx.correct}</span></td>
+          <td><span class="cpill cpill-p">${c.quiz.ns.correct}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="isec">
+    <div class="isec-title">// FINDING NUMBER ASSIGNMENTS PER CASE</div>
+    <div class="iinfo">Numbers 0–9 are displayed in order. Content is fixed per case — different each case to vary blood flow codes.</div>
+    ${CASES.map(c=>`
+      <div class="ibf-label" style="margin-bottom:8px;">CASE 0${c.n} — ${c.diagnosis.toUpperCase()}</div>
+      <div class="mapping-grid" style="margin-bottom:20px;">
+        ${c.mapping.map((origIdx,displayPos)=>`
+          <div class="mapping-cell ${c.correct.includes(origIdx)?'mapping-correct':''}">
+            <div class="mapping-num">[${displayPos}]</div>
+            <div class="mapping-text">${FINDINGS[origIdx].text}</div>
+          </div>`).join('')}
+      </div>`).join('')}
+  </div>
+
+  <div class="isec">
+    <div class="isec-title">// BLOOD FLOW RATIONALE (original finding names)</div>
+    ${CASES.map((c,i)=>`<div class="ibf-row">
+      <div class="ibf-label">CASE 0${c.n} \u2014 ${c.diagnosis.toUpperCase()} \u2192 SESSION CODE: ${sessionBFCodes[i]}</div>
+      <div class="ibf-chain">
+        ${c.bfLabels.map((label,j)=>`
+          <div class="ibf-node">${label}</div>
+          ${j<c.bfLabels.length-1?'<span class="ibf-arr">\u2192</span>':''}
+        `).join('')}
+      </div>
+    </div>`).join('')}
+  </div>
+
+  <div class="isec">
+    <div class="isec-title">// QUIZ ANSWER DETAILS</div>
+    <table class="itbl">
+      <thead><tr><th>Case</th><th>Q1 — Diagnosis (correct)</th><th>Q2 — Next Step (correct)</th></tr></thead>
+      <tbody>
+        ${CASES.map(c=>`<tr>
+          <td style="font-family:var(--mono);font-size:.82rem;">0${c.n}</td>
+          <td><span class="cpill cpill-p">${c.quiz.dx.correct}</span> &nbsp;${c.quiz.dx.options.find(o=>o.l===c.quiz.dx.correct).t}</td>
+          <td><span class="cpill cpill-p">${c.quiz.ns.correct}</span> &nbsp;${c.quiz.ns.options.find(o=>o.l===c.quiz.ns.correct).t}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="isec">
+    <div class="isec-title">// SECURITY NOTE</div>
+    <div class="iwarning">Password is <strong>${INSTRUCTOR_PW}</strong>. It is stored in the HTML source — a deterrent, not a cryptographic lock. Change it by editing the <code>INSTRUCTOR_PW</code> constant in the &lt;script&gt; tag. Do not share the HTML source with students before the session.</div>
+  </div>`;
+}
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+buildProgress();
+renderCases();
+
+// Start ambient music on first interaction with the start screen
+$('start').addEventListener('pointerdown', ()=>playStartMusic(), {once:true});
 </script>
-
 </body>
 </html>

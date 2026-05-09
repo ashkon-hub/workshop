@@ -118,7 +118,21 @@ video{width:100%;border-radius:10px;border:1px solid var(--border);background:#0
 .submit-msg.error{color:var(--red);background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);}
 .submit-msg.success{color:var(--green);background:rgba(57,255,138,.07);border:1px solid rgba(57,255,138,.2);}
 
-/* ── BLOOD FLOW ── */
+/* ── SEQUENCE DRAG & DROP ── */
+.seq-source-label,.seq-target-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:7px;}
+.seq-source{display:flex;flex-wrap:wrap;gap:8px;padding:12px;min-height:52px;border:1px solid rgba(255,179,71,.22);border-radius:10px;margin-bottom:16px;transition:background .2s,border-color .2s;}
+.seq-source.drag-over{border-color:rgba(255,179,71,.55);background:rgba(255,179,71,.05);}
+.seq-empty-hint{font-family:var(--mono);font-size:.65rem;color:rgba(255,179,71,.35);align-self:center;}
+.seq-target{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.seq-slot{flex:1;min-width:100px;min-height:48px;border:1.5px dashed rgba(255,179,71,.32);border-radius:8px;display:flex;align-items:center;justify-content:center;padding:4px;transition:border-color .2s,background .2s;}
+.seq-slot.drag-over{border-color:var(--amber);background:rgba(255,179,71,.12);}
+.seq-slot.filled{border-style:solid;border-color:rgba(255,179,71,.55);}
+.seq-slot-empty{font-family:var(--mono);font-size:.6rem;color:rgba(255,179,71,.28);pointer-events:none;text-align:center;}
+.seq-pill{font-family:var(--mono);font-size:.7rem;padding:7px 10px;border-radius:6px;border:1.5px solid rgba(255,179,71,.45);color:var(--amber);background:rgba(255,179,71,.08);cursor:grab;user-select:none;touch-action:none;display:flex;align-items:center;gap:7px;transition:opacity .2s,border-color .2s,background .2s,transform .15s;width:100%;}
+.seq-pill:active{cursor:grabbing;}
+.seq-pill.dragging{opacity:.3;}
+.seq-handle{color:rgba(255,179,71,.4);font-size:.9rem;line-height:1;flex-shrink:0;}
+.seq-arr{color:var(--amber);font-size:1.2rem;flex-shrink:0;opacity:.6;}
 .bf-box{background:rgba(255,179,71,.04);border:1px solid rgba(255,179,71,.2);border-radius:12px;padding:18px;margin-top:4px;}
 .bf-title{font-family:var(--mono);font-size:.65rem;letter-spacing:.16em;color:var(--amber);text-transform:uppercase;margin-bottom:10px;}
 .bf-instructions{font-size:.86rem;color:var(--text-dim);line-height:1.65;margin-bottom:14px;}
@@ -414,7 +428,7 @@ const FINDINGS = [
 ════════════════════════════════════════ */
 const CASES = [
   {
-    n:1,videoCode:'KQTR',
+    n:1,videoCode:'KQT',
     progressLabel:'SHOCK',title:'Undifferentiated Shock',
     vignette:'68-year-old male presenting with 3 hours of progressive dyspnea, hypotension (BP 82/54), and muffled heart sounds. Tachycardic and diaphoretic. History of recently treated lung adenocarcinoma.',
     views:[
@@ -453,7 +467,7 @@ const CASES = [
     diagnosis:'Cardiac Tamponade',dc:'dc1',
   },
   {
-    n:2,videoCode:'VJXM',
+    n:2,videoCode:'VJX',
     progressLabel:'RESP DISTRESS',title:'Acute Respiratory Distress',
     vignette:'54-year-old female with known cardiomyopathy presents with 5-day history of worsening exertional dyspnea, 2-pillow orthopnea, and bilateral pitting edema to the knees. Denies recent medication compliance.',
     views:[
@@ -493,7 +507,7 @@ const CASES = [
     diagnosis:'Acute Decompensated Heart Failure',dc:'dc2',
   },
   {
-    n:3,videoCode:'LPNC',
+    n:3,videoCode:'LPN',
     progressLabel:'SYNCOPE',title:'Syncope & Hypoxia',
     vignette:'42-year-old male with untreated obstructive sleep apnea presents with acute onset dyspnea, syncope, and pleuritic chest pain. O\u2082 saturation 84% on room air. JVD present, no peripheral edema, lungs clear to auscultation.',
     views:[
@@ -533,7 +547,7 @@ const CASES = [
     diagnosis:'Pulmonary HTN / RV Failure',dc:'dc3',
   },
   {
-    n:4,videoCode:'DQMV',
+    n:4,videoCode:'DQM',
     progressLabel:'TRAUMA',title:'Trauma',
     vignette:'22-year-old male, restrained driver in high-speed MVC. BP 72/48, HR 136, diaphoretic. GCS 14. Diffuse abdominal tenderness on palpation.',
     views:[
@@ -755,7 +769,7 @@ function renderCases(){
       </div>
       <hr class="divider"/>
       <div class="input-label">// Enter instructor video code to unlock clips</div>
-      <input class="code-input" id="vcode-${c.n}" placeholder="\u00b7 \u00b7 \u00b7 \u00b7" maxlength="4"
+      <input class="code-input" id="vcode-${c.n}" placeholder="\u00b7 \u00b7 \u00b7" maxlength="3"
              onkeydown="if(event.key==='Enter')unlockVideo(${c.n})"/>
       <div class="msg" id="vmsg-${c.n}"></div>
       <button class="btn-submit" onclick="unlockVideo(${c.n})">UNLOCK VIDEOS</button>
@@ -775,20 +789,16 @@ function renderCases(){
       <div id="bfsec-${c.n}" class="hidden">
         <hr class="divider"/>
         <div class="bf-box">
-          <div class="bf-title">// Derive Pathophysiology Code</div>
+          <div class="bf-title">// Arrange in Pathophysiologic Order</div>
           <p class="bf-instructions">
-            Correct findings identified. Arrange them in order of
-            <strong style="color:var(--text)">pathophysiologic cause and effect</strong>
-            to generate your sequence code.<br><br>
-            <span style="color:var(--text-dim);font-size:.8rem;">e.g. tension pneumothorax: pneumothorax &rarr; mediastinal shift &rarr; RV underfilling &rarr; plethoric IVC</span><br><br>
-            Enter the number sequence below (no spaces).
+            Correct findings identified. Drag the findings below into
+            <strong style="color:var(--text)">pathophysiologic cause → effect order</strong>
+            then submit.<br><br>
+            <span style="color:var(--text-dim);font-size:.78rem;">e.g. tension pneumothorax &rarr; mediastinal shift &rarr; RV underfilling &rarr; plethoric IVC</span>
           </p>
-          <div class="bf-chips" id="bfchips-${c.n}"></div>
-          <div class="input-label">// Blood flow sequence</div>
-          <input class="code-input" id="bfcode-${c.n}" placeholder="e.g. 1234" maxlength="4" style="letter-spacing:.3em;"
-                 onkeydown="if(event.key==='Enter')submitBF(${c.n})"/>
+          <div class="seq-container" id="seq-${c.n}"></div>
           <div class="msg" id="bfmsg-${c.n}"></div>
-          <button class="btn-submit" onclick="submitBF(${c.n})">SUBMIT SEQUENCE CODE</button>
+          <button class="btn-submit" onclick="submitBF(${c.n})">SUBMIT ORDER</button>
         </div>
       </div>
 
@@ -915,14 +925,7 @@ function submitFindings(n){
     SFX.confirm();
     playTensionSounds(1);
     sm.textContent='// FINDINGS CONFIRMED';sm.className='submit-msg success visible';
-    // Show chips with DISPLAY numbers (what student sees)
-    $('bfchips-'+n).innerHTML=selectedOrig
-      .filter(origIdx=>c.bfOriginalOrder.includes(origIdx))
-      .map(origIdx=>{
-        const f=FINDINGS[origIdx];
-        const displayPos=displayNumOf(origIdx,c);
-        return `<div class="bf-chip">[${displayPos}] ${f.text}</div>`;
-      }).join('');
+    initSeq(n);
     setTimeout(()=>show('bfsec-'+n),500);
   } else {
     SFX.wrong();
@@ -935,25 +938,186 @@ function submitFindings(n){
 }
 
 /* ════════════════════════════════════════
-   BLOOD FLOW CODE
+   SEQUENCE DRAG & DROP
+   Top: random source pool (no arrows)
+   Bottom: numbered slots with arrows
+════════════════════════════════════════ */
+const caseSeqSrc={}, caseSeqTgt={};
+
+function shuffleArr(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function initSeq(n){
+  caseSeqSrc[n]=shuffleArr([...CASES[n-1].bfOriginalOrder]);
+  caseSeqTgt[n]=new Array(CASES[n-1].bfOriginalOrder.length).fill(null);
+  renderSeq(n);
+}
+
+function renderSeq(n){
+  const c=CASES[n-1];
+  const src=caseSeqSrc[n];
+  const tgt=caseSeqTgt[n];
+
+  const pillHtml=(origIdx,loc,slot=null)=>{
+    const f=FINDINGS[origIdx];
+    const dp=displayNumOf(origIdx,c);
+    const slotAttr=slot!==null?`data-slot="${slot}"`:'';
+    return `<div class="seq-pill" draggable="true"
+      data-orig="${origIdx}" data-loc="${loc}" ${slotAttr}
+      ondragstart="seqDS(event,'${loc}',${n},${origIdx},${slot})"
+      ondragend="seqDE()"
+      ontouchstart="seqTS(event,'${loc}',${n},${origIdx},${slot})"
+      ontouchmove="seqTM(event)"
+      ontouchend="seqTE(event,${n})">
+      <span class="seq-handle">⠿</span>[${dp}] ${f.text}
+    </div>`;
+  };
+
+  $('seq-'+n).innerHTML=`
+    <div class="seq-source-label">Available findings</div>
+    <div class="seq-source" id="seq-src-${n}"
+         ondragover="srcDO(event)" ondragleave="srcDL(event)" ondrop="srcDrop(event,${n})">
+      ${src.length===0
+        ?'<span class="seq-empty-hint">All findings placed below</span>'
+        :src.map(o=>pillHtml(o,'src')).join('')}
+    </div>
+    <div class="seq-target-label">Cause → Effect order (drag here)</div>
+    <div class="seq-target">
+      ${tgt.map((o,si)=>`
+        ${si>0?'<div class="seq-arr">→</div>':''}
+        <div class="seq-slot ${o!==null?'filled':''}" data-slot="${si}"
+             ondragover="slotDO(event)" ondragleave="slotDL(event)" ondrop="slotDrop(event,${n},${si})">
+          ${o!==null?pillHtml(o,'tgt',si):'<span class="seq-slot-empty">drop here</span>'}
+        </div>`).join('')}
+    </div>`;
+}
+
+// Drag state
+let _dLoc=null,_dN=null,_dOrig=null,_dSlot=null;
+
+function seqDS(e,loc,n,orig,slot){
+  _dLoc=loc;_dN=n;_dOrig=orig;_dSlot=slot;
+  e.dataTransfer.effectAllowed='move';
+  setTimeout(()=>{
+    const el=document.querySelector(`.seq-pill[data-orig="${orig}"][data-loc="${loc}"]`);
+    if(el)el.classList.add('dragging');
+  },0);
+}
+function seqDE(){
+  document.querySelectorAll('.seq-pill').forEach(p=>p.classList.remove('dragging'));
+  document.querySelectorAll('.seq-slot,.seq-source').forEach(s=>s.classList.remove('drag-over'));
+  _dLoc=null;_dN=null;_dOrig=null;_dSlot=null;
+}
+function srcDO(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+function srcDL(e){e.currentTarget.classList.remove('drag-over');}
+function srcDrop(e,n){
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if(_dN!==n||_dLoc==='src')return;
+  caseSeqTgt[n][_dSlot]=null;
+  if(!caseSeqSrc[n].includes(_dOrig))caseSeqSrc[n].push(_dOrig);
+  renderSeq(n);
+}
+function slotDO(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+function slotDL(e){e.currentTarget.classList.remove('drag-over');}
+function slotDrop(e,n,si){
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if(_dN!==n)return;
+  const tgt=caseSeqTgt[n],src=caseSeqSrc[n];
+  const existing=tgt[si];
+  if(_dLoc==='src'){
+    if(existing!==null)src.push(existing);
+    tgt[si]=_dOrig;
+    const idx=src.indexOf(_dOrig);
+    if(idx>-1)src.splice(idx,1);
+  } else {
+    tgt[si]=_dOrig;
+    tgt[_dSlot]=existing;
+  }
+  renderSeq(n);
+}
+
+// Touch drag
+let _tClone=null,_tLoc=null,_tN=null,_tOrig=null,_tSlot=null,_tOff={x:0,y:0};
+function seqTS(e,loc,n,orig,slot){
+  e.preventDefault();
+  const t=e.touches[0];
+  _tLoc=loc;_tN=n;_tOrig=orig;_tSlot=slot;
+  const el=e.currentTarget;
+  const r=el.getBoundingClientRect();
+  _tOff={x:t.clientX-r.left,y:t.clientY-r.top};
+  _tClone=el.cloneNode(true);
+  Object.assign(_tClone.style,{position:'fixed',left:r.left+'px',top:r.top+'px',
+    width:r.width+'px',opacity:'0.85',zIndex:'9998',pointerEvents:'none',margin:'0'});
+  document.body.appendChild(_tClone);
+  el.classList.add('dragging');
+}
+function seqTM(e){
+  e.preventDefault();
+  if(!_tClone)return;
+  const t=e.touches[0];
+  _tClone.style.left=(t.clientX-_tOff.x)+'px';
+  _tClone.style.top=(t.clientY-_tOff.y)+'px';
+  _tClone.style.visibility='hidden';
+  const under=document.elementFromPoint(t.clientX,t.clientY);
+  _tClone.style.visibility='';
+  document.querySelectorAll('.seq-slot,.seq-source').forEach(s=>s.classList.remove('drag-over'));
+  const slot=under?.closest?.('.seq-slot');
+  const source=under?.closest?.('.seq-source');
+  if(slot)slot.classList.add('drag-over');
+  else if(source)source.classList.add('drag-over');
+}
+function seqTE(e,n){
+  e.preventDefault();
+  if(!_tClone)return;
+  const t=e.changedTouches[0];
+  _tClone.style.visibility='hidden';
+  const under=document.elementFromPoint(t.clientX,t.clientY);
+  document.body.removeChild(_tClone);_tClone=null;
+  document.querySelectorAll('.seq-pill').forEach(p=>p.classList.remove('dragging'));
+  document.querySelectorAll('.seq-slot,.seq-source').forEach(s=>s.classList.remove('drag-over'));
+  // Sync touch state to drag state so drop handlers work
+  _dLoc=_tLoc;_dN=_tN;_dOrig=_tOrig;_dSlot=_tSlot;
+  const slotEl=under?.closest?.('.seq-slot');
+  const srcEl=under?.closest?.('.seq-source');
+  if(slotEl){
+    const si=parseInt(slotEl.dataset.slot);
+    const mock={preventDefault:()=>{},currentTarget:{classList:{remove:()=>{}}}};
+    slotDrop(mock,n,si);
+  } else if(srcEl){
+    const mock={preventDefault:()=>{},currentTarget:{classList:{remove:()=>{}}}};
+    srcDrop(mock,n);
+  }
+  _tLoc=null;_tN=null;_tOrig=null;_tSlot=null;
+  _dLoc=null;_dN=null;_dOrig=null;_dSlot=null;
+}
+
+/* ════════════════════════════════════════
+   SUBMIT SEQUENCE ORDER
 ════════════════════════════════════════ */
 function submitBF(n){
   const c=CASES[n-1];
-  const inp=$('bfcode-'+n);
-  const val=inp.value.trim();
-  const expected=computeBFCode(c);
-  if(val===expected){
+  const tgt=caseSeqTgt[n];
+  if(!tgt||tgt.some(s=>s===null)){
+    setMsg('bfmsg-'+n,'// FILL ALL SLOTS FIRST','error');
+    return;
+  }
+  const ok=JSON.stringify(tgt)===JSON.stringify(c.bfOriginalOrder);
+  if(ok){
     SFX.codeAccepted();
     playTensionSounds(2);
-    inp.classList.add('success');
     setMsg('bfmsg-'+n,'// SEQUENCE CONFIRMED','success');
     setTimeout(()=>show('quizsec-'+n),600);
   } else {
     SFX.wrong();
-    inp.classList.remove('success');inp.classList.add('error');
     setMsg('bfmsg-'+n,'// INCORRECT \u2014 RECONSIDER PATHOPHYSIOLOGIC ORDER','error');
-    inp.classList.add('shake');
-    setTimeout(()=>{inp.classList.remove('shake','error');inp.value='';inp.focus();},400);
+    const box=$('seq-'+n);
+    if(box){box.classList.add('shake');setTimeout(()=>box.classList.remove('shake'),400);}
+    setTimeout(()=>setMsg('bfmsg-'+n,'',''),3500);
   }
 }
 
@@ -1311,13 +1475,13 @@ function buildInstructorContent(){
     <div class="isec-title">// VIDEO CODES &amp; ANSWERS</div>
     <div class="iinfo">All codes are fixed and consistent across all devices.</div>
     <table class="itbl">
-      <thead><tr><th>#</th><th>Diagnosis</th><th>Video Code</th><th>Sequence Code</th><th>Quiz Dx</th><th>Quiz Next Step</th></tr></thead>
+      <thead><tr><th>#</th><th>Diagnosis</th><th>Video Code</th><th>Correct Sequence</th><th>Quiz Dx</th><th>Quiz Next Step</th></tr></thead>
       <tbody>
         ${CASES.map((c,i)=>`<tr>
           <td style="font-family:var(--mono);font-size:.82rem;">0${c.n}</td>
           <td>${c.diagnosis}</td>
           <td><span class="cpill cpill-a">${c.videoCode}</span></td>
-          <td><span class="cpill cpill-g">${bfCodes[i]}</span></td>
+          <td style="font-size:.8rem;">${c.bfLabels.join(' \u2192 ')}</td>
           <td><span class="cpill cpill-p">${c.quiz.dx.correct}</span></td>
           <td><span class="cpill cpill-p">${c.quiz.ns.correct}</span></td>
         </tr>`).join('')}

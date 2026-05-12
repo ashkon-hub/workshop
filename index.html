@@ -1114,7 +1114,10 @@ function submitBF(n){
     setTimeout(()=>show('quizsec-'+n),600);
   } else {
     SFX.wrong();
-    setMsg('bfmsg-'+n,'// INCORRECT \u2014 RECONSIDER PATHOPHYSIOLOGIC ORDER','error');
+    const hint=n===3
+      ? '// INCORRECT \u2014 THINK ABOUT WHERE THE PROBLEM STARTS ANATOMICALLY'
+      : '// INCORRECT \u2014 RECONSIDER PATHOPHYSIOLOGIC ORDER';
+    setMsg('bfmsg-'+n,hint,'error');
     const box=$('seq-'+n);
     if(box){box.classList.add('shake');setTimeout(()=>box.classList.remove('shake'),400);}
     setTimeout(()=>setMsg('bfmsg-'+n,'',''),3500);

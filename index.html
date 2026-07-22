@@ -308,7 +308,7 @@ video{width:100%;border-radius:10px;border:1px solid var(--border);background:#0
 
 <!-- INSTRUCTIONS -->
 <div id="instructions">
-  <div class="start-badge"><span>JMP POCUS Simulation Lab</span></div>
+  <div class="start-badge"><span>POCUS Simulation Lab</span></div>
   <h1 class="instr-page-title"><span>Cardiac Escape Room</span></h1>
   <p class="instr-page-sub">A point-of-care ultrasound simulation across four critical illness states.</p>
 
@@ -347,7 +347,7 @@ video{width:100%;border-radius:10px;border:1px solid var(--border);background:#0
 
 <!-- START -->
 <div id="start" class="hidden">
-  <div class="start-badge"><span>JMP POCUS Simulation Lab</span></div>
+  <div class="start-badge"><span>POCUS Simulation Lab</span></div>
   <div class="pulse-ring">
     <div class="icon">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -428,7 +428,7 @@ const FINDINGS = [
 ════════════════════════════════════════ */
 const CASES = [
   {
-    n:1,videoCode:'KQT',
+    n:1,videoCode:'BECK',
     progressLabel:'SHOCK',title:'Undifferentiated Shock',
     vignette:'68-year-old male presenting with 3 hours of progressive dyspnea, hypotension (BP 82/54), and muffled heart sounds. Tachycardic and diaphoretic. History of recently treated lung adenocarcinoma.',
     views:[
@@ -467,7 +467,7 @@ const CASES = [
     diagnosis:'Cardiac Tamponade',dc:'dc1',
   },
   {
-    n:2,videoCode:'VJX',
+    n:2,videoCode:'PUMP',
     progressLabel:'RESP DISTRESS',title:'Acute Respiratory Distress',
     vignette:'54-year-old female with known cardiomyopathy presents with 5-day history of worsening exertional dyspnea, 2-pillow orthopnea, and bilateral pitting edema to the knees.',
     views:[
@@ -507,7 +507,7 @@ const CASES = [
     diagnosis:'Acute Decompensated Heart Failure',dc:'dc2',
   },
   {
-    n:3,videoCode:'LPN',
+    n:3,videoCode:'CLOG',
     progressLabel:'SYNCOPE',title:'Syncope & Hypoxia',
     vignette:'42-year-old male with untreated obstructive sleep apnea presents with acute onset dyspnea, syncope, and pleuritic chest pain. O\u2082 saturation 84% on room air. JVD present, no peripheral edema, lungs clear to auscultation.',
     views:[
@@ -547,7 +547,7 @@ const CASES = [
     diagnosis:'Pulmonary HTN / RV Failure',dc:'dc3',
   },
   {
-    n:4,videoCode:'DQM',
+    n:4,videoCode:'BLED',
     progressLabel:'TRAUMA',title:'Trauma',
     vignette:'22-year-old male, restrained driver in high-speed MVC. BP 72/48, HR 136, diaphoretic. GCS 14. Diffuse abdominal tenderness on palpation.',
     views:[
@@ -769,7 +769,7 @@ function renderCases(){
       </div>
       <hr class="divider"/>
       <div class="input-label">// Enter instructor video code to unlock clips</div>
-      <input class="code-input" id="vcode-${c.n}" placeholder="\u00b7 \u00b7 \u00b7" maxlength="3"
+      <input class="code-input" id="vcode-${c.n}" placeholder="\u00b7 \u00b7 \u00b7 \u00b7" maxlength="4"
              onkeydown="if(event.key==='Enter')unlockVideo(${c.n})"/>
       <div class="msg" id="vmsg-${c.n}"></div>
       <button class="btn-submit" onclick="unlockVideo(${c.n})">UNLOCK VIDEOS</button>
